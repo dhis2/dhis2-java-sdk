@@ -46,7 +46,7 @@
                     <dependency>
                         <groupId>com.github.dhis2.dhis2-core</groupId>
                         <artifactId>dhis-service-dxf2</artifactId>
-                        <version>2.37.4</version>
+                        <version>2.37.6</version>
                     </dependency>
                     <dependency>
                         <groupId>org.slf4j</groupId>
