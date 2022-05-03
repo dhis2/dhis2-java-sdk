@@ -31,8 +31,6 @@ import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.converter.RequestConverter;
 import org.hisp.dhis.integration.sdk.api.converter.ResponseConverter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 public class JacksonConverterFactory implements ConverterFactory
 {
     @Override
