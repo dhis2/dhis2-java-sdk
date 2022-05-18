@@ -31,10 +31,11 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Map;
 
-import org.hisp.dhis.api.v2_37_4.model.OrganisationUnit;
-import org.hisp.dhis.api.v2_37_4.model.OrganisationUnitLevel;
-import org.hisp.dhis.api.v2_37_4.model.WebMessage;
+import org.hisp.dhis.api.v2_37_6.model.OrganisationUnit;
+import org.hisp.dhis.api.v2_37_6.model.OrganisationUnitLevel;
+import org.hisp.dhis.api.v2_37_6.model.WebMessage;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
@@ -71,7 +72,7 @@ public final class Environment
         POSTGRESQL_CONTAINER.start();
 
         DHIS2_CONTAINER = new GenericContainer<>(
-            "dhis2/core:2.37.4-tomcat-8.5.34-jre8-alpine" )
+            "dhis2/core:2.37.6-tomcat-8.5.34-jre8-alpine" )
                 .dependsOn( POSTGRESQL_CONTAINER )
                 .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
                 .withNetwork( NETWORK ).withExposedPorts( 8080 )
@@ -115,8 +116,8 @@ public final class Environment
         OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme" ).withShortName( "Acme" )
             .withOpeningDate( new Date() );
 
-        return DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit ).transfer()
-            .returnAs( WebMessage.class ).getResponse().get().get( "uid" );
+        return (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit ).transfer()
+            .returnAs( WebMessage.class ).getResponse().get()).get( "uid" );
     }
 
     private static void createOrgUnitLevel()

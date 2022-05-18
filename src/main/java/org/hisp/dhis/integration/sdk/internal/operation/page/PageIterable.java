@@ -35,7 +35,7 @@ import java.util.Map;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
-import org.hisp.dhis.integration.sdk.Page;
+import org.hisp.dhis.api.model.Page;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.internal.DefaultDhis2Response;

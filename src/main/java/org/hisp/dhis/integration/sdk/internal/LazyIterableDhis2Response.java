@@ -29,7 +29,7 @@ package org.hisp.dhis.integration.sdk.internal;
 
 import okhttp3.OkHttpClient;
 
-import org.hisp.dhis.integration.sdk.Page;
+import org.hisp.dhis.api.model.Page;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.IterableDhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
