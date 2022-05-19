@@ -1,0 +1,4 @@
+[submodule "dhis2-json-schema-generator"]
+	path = dhis2-json-schema-generator
+	url = https://github.com/dhis2/dhis2-json-schema-generator.git
+	branch = json-schemas

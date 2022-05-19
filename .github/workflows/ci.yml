@@ -13,6 +13,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+      with:
+        submodules: 'true'
     - uses: actions/setup-java@v2
       with:
         java-version: '11'
@@ -30,4 +32,4 @@ jobs:
       run: |
         echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
         echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
-        mvn deploy --settings .mvn/settings.xml -Dgpg.skip=false -DskipTests=true -B
+        mvn clean deploy --settings .mvn/settings.xml -Dgpg.skip=false -Dmaven.test.skip=true -B

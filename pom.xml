@@ -20,57 +20,10 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>exec-maven-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>java</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includePluginDependencies>true</includePluginDependencies>
-                    <mainClass>org.hisp.dhis.integration.jsonschemagen.Dhis2JsonSchemaGenerator</mainClass>
-                    <arguments>target/generated-resources/schemas</arguments>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.hisp.dhis.integration</groupId>
-                        <artifactId>dhis2-json-schema-generator</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.github.dhis2.dhis2-core</groupId>
-                        <artifactId>dhis-api</artifactId>
-                        <version>2.37.4</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>com.github.dhis2.dhis2-core</groupId>
-                        <artifactId>dhis-service-dxf2</artifactId>
-                        <version>2.37.4</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                        <version>1.7.36</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                        <version>4.13.2</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
                 <version>1.1.1</version>
                 <configuration>
-                    <sourceDirectory>${project.build.directory}/generated-resources/schemas</sourceDirectory>
-                    <targetPackage>org.hisp.dhis.api.v2_37_4.model</targetPackage>
                     <useOptionalForGetters>true</useOptionalForGetters>
                     <generateBuilders>true</generateBuilders>
                     <includeDynamicBuilders>true</includeDynamicBuilders>
@@ -81,9 +34,34 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>v2.37.6</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirectory>dhis2-json-schema-generator/schemas/v2.37.6</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.v2_37_6.model</targetPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v2.36.10</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>dhis2-json-schema-generator/schemas/v2.36.10</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.v2_36_10.model</targetPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v2.35.13</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>dhis2-json-schema-generator/schemas/v2.35.13</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.v2_35_13.model</targetPackage>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -212,23 +190,6 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
-        </pluginRepository>
-        <pluginRepository>
-            <id>oss.sonatype.org</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </pluginRepository>
-    </pluginRepositories>
 
     <distributionManagement>
         <repository>
