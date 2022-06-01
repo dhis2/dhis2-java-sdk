@@ -38,18 +38,29 @@ public class Dhis2ClientBuilder
 
     private final String baseApiUrl;
 
+    private final int maxIdleConnections;
+
+    private final long keepAliveDuration;
+
     private ConverterFactory converterFactory = new JacksonConverterFactory();
 
     public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password )
     {
-        return new Dhis2ClientBuilder( baseApiUrl, username, password );
+        return new Dhis2ClientBuilder( baseApiUrl, username, password, 5, 300000 );
     }
 
-    private Dhis2ClientBuilder( String baseApiUrl, String username, String password )
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password, int maxIdleConnections, long keepAliveDuration )
+    {
+        return new Dhis2ClientBuilder( baseApiUrl, username, password, maxIdleConnections, keepAliveDuration );
+    }
+
+    private Dhis2ClientBuilder( String baseApiUrl, String username, String password, int maxIdleConnections, long keepAliveDuration )
     {
         this.baseApiUrl = baseApiUrl.trim();
         this.username = username;
         this.password = password;
+        this.maxIdleConnections = maxIdleConnections;
+        this.keepAliveDuration = keepAliveDuration;
     }
 
     public Dhis2ClientBuilder withConverterFactory( ConverterFactory converterFactory )
@@ -66,6 +77,6 @@ public class Dhis2ClientBuilder
         {
             apiPathStringBuilder.append( "/" );
         }
-        return new Dhis2Client( apiPathStringBuilder.toString(), username, password, converterFactory );
+        return new Dhis2Client( apiPathStringBuilder.toString(), username, password, converterFactory, maxIdleConnections, keepAliveDuration );
     }
 }
