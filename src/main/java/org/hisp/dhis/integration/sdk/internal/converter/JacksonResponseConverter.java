@@ -51,7 +51,7 @@ public class JacksonResponseConverter<T> implements ResponseConverter<T>
     @Override
     public T convert( ResponseBody responseBody )
     {
-        try
+        try ( responseBody )
         {
             return OBJECT_MAPPER.readValue( responseBody.charStream(), returnType );
         }

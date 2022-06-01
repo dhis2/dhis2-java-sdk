@@ -53,11 +53,10 @@ public class Dhis2Client
 
     private final ConverterFactory converterFactory;
 
-    Dhis2Client( String apiUrl, String username, String password, ConverterFactory converterFactory )
-    {
+    Dhis2Client( String apiUrl, String username, String password, ConverterFactory converterFactory, int maxIdleConnections, long keepAliveDuration ) {
         this.apiUrl = apiUrl;
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
-            .connectionPool( new ConnectionPool( 1, 5, TimeUnit.MINUTES ) );
+            .connectionPool( new ConnectionPool( maxIdleConnections, keepAliveDuration, TimeUnit.MILLISECONDS ) );
         String credentials = Credentials.basic( username, password );
         httpClient = httpClientBuilder.addInterceptor( chain -> {
             Request request = chain.request().newBuilder()

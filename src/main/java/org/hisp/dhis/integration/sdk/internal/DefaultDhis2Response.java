@@ -27,12 +27,11 @@
  */
 package org.hisp.dhis.integration.sdk.internal;
 
-import java.io.InputStream;
-
 import okhttp3.Response;
-
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
+
+import java.io.InputStream;
 
 public class DefaultDhis2Response implements Dhis2Response
 {
@@ -49,14 +48,7 @@ public class DefaultDhis2Response implements Dhis2Response
     @Override
     public <T> T returnAs( Class<T> responseType )
     {
-        try
-        {
-            return converterFactory.createResponseConverter( responseType ).convert( response.body() );
-        }
-        finally
-        {
-            response.close();
-        }
+        return converterFactory.createResponseConverter( responseType ).convert( response.body() );
     }
 
     @Override
@@ -73,5 +65,11 @@ public class DefaultDhis2Response implements Dhis2Response
     public ConverterFactory getConverterFactory()
     {
         return converterFactory;
+    }
+
+    @Override
+    public void close()
+    {
+        response.close();
     }
 }

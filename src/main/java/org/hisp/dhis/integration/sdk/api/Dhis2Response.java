@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.integration.sdk.api;
 
+import java.io.Closeable;
 import java.io.InputStream;
 
-public interface Dhis2Response
+public interface Dhis2Response extends Closeable
 {
     <T> T returnAs( Class<T> responseType );
 
