@@ -27,9 +27,8 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
-import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-
+import okhttp3.Request;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.PatchOperation;
@@ -43,13 +42,7 @@ public class DefaultPatchOperation extends AbstractResourceOperation implements 
     }
 
     @Override
-    public Dhis2Response transfer()
-    {
-        return null;
-    }
-
-    @Override
-    public Dhis2Response doTransfer( HttpUrl httpUrl )
+    protected Dhis2Response doResourceTransfer( byte[] resourceAsBytes, Request.Builder requestBuilder )
     {
         throw new UnsupportedOperationException();
     }

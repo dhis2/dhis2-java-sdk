@@ -47,25 +47,14 @@ public class DefaultPutOperation extends AbstractResourceOperation implements Pu
     }
 
     @Override
-    public Dhis2Response doTransfer( HttpUrl httpUrl )
+    protected Dhis2Response doResourceTransfer( byte[] resourceAsBytes, Request.Builder requestBuilder )
     {
-        Request.Builder requestBuilder = new Request.Builder().url( httpUrl );
-        Request request;
-        converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource );
-        if ( resource != null )
-        {
-            request = requestBuilder.put( RequestBody.create(
-                converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource ).getBytes(),
-                MediaType.parse( "application/json" ) ) ).build();
-        }
-        else
-        {
-            request = requestBuilder.put( RequestBody.create( new byte[] {}, MediaType.parse( "application/json" ) ) )
-                .build();
-        }
+        Request request = requestBuilder.put( RequestBody.create( resourceAsBytes ) )
+            .build();
 
         okhttp3.Response response = onHttpResponse( () -> httpClient.newCall( request ).execute() );
         return new DefaultDhis2Response( response, converterFactory );
     }
+
 
 }

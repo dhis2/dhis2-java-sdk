@@ -33,6 +33,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.api.v2_37_6.model.OrganisationUnit;
 import org.hisp.dhis.api.v2_37_6.model.OrganisationUnitLevel;
 import org.hisp.dhis.api.v2_37_6.model.WebMessage;
@@ -98,10 +99,11 @@ public final class Environment
         String metaData;
         try
         {
-            metaData = new String(
+
+            metaData = new ObjectMapper().writeValueAsString( new String(
                 Thread.currentThread().getContextClassLoader().getResourceAsStream( "MLAG00_1.2.1_DHIS2.37.json" )
                     .readAllBytes(),
-                Charset.defaultCharset() );
+                Charset.defaultCharset() ) );
         }
         catch ( IOException e )
         {
