@@ -27,8 +27,10 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-
+import okhttp3.Request;
+import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.ResourceOperation;
 
@@ -41,6 +43,34 @@ public abstract class AbstractResourceOperation extends AbstractOperation implem
     {
         super( baseApiUrl, path, httpClient, converterFactory, pathParams );
     }
+
+    @Override
+    public Dhis2Response doTransfer( HttpUrl httpUrl ) {
+        HttpUrl.Builder httpUrlBuilder = httpUrl.newBuilder();
+        Request.Builder requestBuilder = new Request.Builder().url( httpUrlBuilder.build() )
+            .addHeader( "Content-Type", "application/json" );
+        final byte[] bytes;
+        if ( resource != null )
+        {
+            if ( resource instanceof String )
+            {
+                bytes = ((String) resource).getBytes();
+            }
+            else
+            {
+                bytes = converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource )
+                    .getBytes();
+            }
+        }
+        else
+        {
+            bytes = new byte[] {};
+        }
+
+        return doResourceTransfer(bytes, requestBuilder);
+    }
+
+    protected abstract Dhis2Response doResourceTransfer( byte[] resourceAsBytes, Request.Builder requestBuilder );
 
     @Override
     public ResourceOperation withResource( Object resource )

@@ -47,25 +47,13 @@ public class DefaultPostOperation extends AbstractResourceOperation implements P
     }
 
     @Override
-    public Dhis2Response doTransfer( HttpUrl httpUrl )
+    protected Dhis2Response doResourceTransfer( byte[] resourceAsBytes, Request.Builder requestBuilder )
     {
-        HttpUrl.Builder httpUrlBuilder = httpUrl.newBuilder();
-        Request.Builder requestBuilder = new Request.Builder().url( httpUrlBuilder.build() );
-        Request request;
-        converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource );
-        if ( resource != null )
-        {
-            request = requestBuilder.post( RequestBody.create(
-                converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource ).getBytes(),
-                MediaType.parse( "application/json" ) ) ).build();
-        }
-        else
-        {
-            request = requestBuilder.post( RequestBody.create( new byte[] {}, MediaType.parse( "application/json" ) ) )
-                .build();
-        }
+        Request request = requestBuilder.post( RequestBody.create( resourceAsBytes ) )
+        .build();
 
         okhttp3.Response response = onHttpResponse( () -> httpClient.newCall( request ).execute() );
         return new DefaultDhis2Response( response, converterFactory );
     }
+
 }
