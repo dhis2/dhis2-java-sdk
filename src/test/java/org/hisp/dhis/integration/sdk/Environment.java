@@ -88,29 +88,9 @@ public final class Environment
                 .getFirstMappedPort() + "/api",
             "admin", "district" ).build();
 
-        importMetaData();
         ORG_UNIT_ID = createOrgUnit();
         createOrgUnitLevel();
         addOrgUnitToUser( ORG_UNIT_ID );
-    }
-
-    private static void importMetaData()
-    {
-        String metaData;
-        try
-        {
-
-            metaData = new ObjectMapper().writeValueAsString( new String(
-                Thread.currentThread().getContextClassLoader().getResourceAsStream( "MLAG00_1.2.1_DHIS2.37.json" )
-                    .readAllBytes(),
-                Charset.defaultCharset() ) );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
-        }
-
-        DHIS2_CLIENT.post( "metadata" ).withResource( metaData ).withParameter( "atomicMode", "NONE" ).transfer();
     }
 
     private static String createOrgUnit()
