@@ -34,6 +34,7 @@ import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
+import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.DeleteOperation;
 import org.hisp.dhis.integration.sdk.api.operation.GetOperation;
@@ -45,7 +46,7 @@ import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultPostOperation;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultPutOperation;
 
-public class Dhis2Client
+public class DefaultDhis2Client implements Dhis2Client
 {
     private final OkHttpClient httpClient;
 
@@ -53,7 +54,7 @@ public class Dhis2Client
 
     private final ConverterFactory converterFactory;
 
-    Dhis2Client( String apiUrl, String username, String password, ConverterFactory converterFactory, int maxIdleConnections, long keepAliveDuration ) {
+    DefaultDhis2Client( String apiUrl, String username, String password, ConverterFactory converterFactory, int maxIdleConnections, long keepAliveDuration ) {
         this.apiUrl = apiUrl;
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
             .connectionPool( new ConnectionPool( maxIdleConnections, keepAliveDuration, TimeUnit.MILLISECONDS ) );
@@ -68,21 +69,25 @@ public class Dhis2Client
         this.converterFactory = converterFactory;
     }
 
+    @Override
     public PostOperation post( String path, String... pathParams )
     {
         return new DefaultPostOperation( apiUrl, path, httpClient, converterFactory, pathParams );
     }
 
+    @Override
     public PutOperation put( String path, String... pathParams )
     {
         return new DefaultPutOperation( apiUrl, path, httpClient, converterFactory, pathParams );
     }
 
+    @Override
     public GetOperation get( String path, String... pathParams )
     {
         return new DefaultGetOperation( apiUrl, path, httpClient, converterFactory, pathParams );
     }
 
+    @Override
     public PatchOperation patch( String path, String... pathParams )
     {
         throw new UnsupportedOperationException();
@@ -90,11 +95,13 @@ public class Dhis2Client
         // converterFactory );
     }
 
+    @Override
     public DeleteOperation delete( String path, String... pathParams )
     {
         return new DefaultDeleteOperation( apiUrl, path, httpClient, converterFactory );
     }
 
+    @Override
     public OkHttpClient getHttpClient()
     {
         return httpClient;

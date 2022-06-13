@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.integration.sdk;
 
+import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.internal.converter.JacksonConverterFactory;
 
@@ -77,6 +78,6 @@ public class Dhis2ClientBuilder
         {
             apiPathStringBuilder.append( "/" );
         }
-        return new Dhis2Client( apiPathStringBuilder.toString(), username, password, converterFactory, maxIdleConnections, keepAliveDuration );
+        return new DefaultDhis2Client( apiPathStringBuilder.toString(), username, password, converterFactory, maxIdleConnections, keepAliveDuration );
     }
 }
