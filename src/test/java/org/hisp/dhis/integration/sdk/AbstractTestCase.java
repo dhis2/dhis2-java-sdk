@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.integration.sdk;
 
+import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.hisp.dhis.integration.sdk.internal.converter.JacksonConverterFactory;
 import org.junit.jupiter.api.BeforeAll;
 
