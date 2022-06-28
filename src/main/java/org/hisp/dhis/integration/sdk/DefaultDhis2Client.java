@@ -30,9 +30,7 @@ package org.hisp.dhis.integration.sdk;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.ConnectionPool;
-import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
@@ -41,6 +39,7 @@ import org.hisp.dhis.integration.sdk.api.operation.GetOperation;
 import org.hisp.dhis.integration.sdk.api.operation.PatchOperation;
 import org.hisp.dhis.integration.sdk.api.operation.PostOperation;
 import org.hisp.dhis.integration.sdk.api.operation.PutOperation;
+import org.hisp.dhis.integration.sdk.api.security.SecurityContext;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultDeleteOperation;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultPostOperation;
@@ -54,18 +53,14 @@ public class DefaultDhis2Client implements Dhis2Client
 
     private final ConverterFactory converterFactory;
 
-    DefaultDhis2Client( String apiUrl, String username, String password, ConverterFactory converterFactory, int maxIdleConnections, long keepAliveDuration ) {
+    DefaultDhis2Client( String apiUrl, SecurityContext securityContext, ConverterFactory converterFactory,
+        int maxIdleConnections, long keepAliveDuration )
+    {
         this.apiUrl = apiUrl;
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
             .connectionPool( new ConnectionPool( maxIdleConnections, keepAliveDuration, TimeUnit.MILLISECONDS ) );
-        String credentials = Credentials.basic( username, password );
-        httpClient = httpClientBuilder.addInterceptor( chain -> {
-            Request request = chain.request().newBuilder()
-                .header( "Authorization", credentials )
-                .build();
-
-            return chain.proceed( request );
-        } ).build();
+        httpClient = httpClientBuilder.addInterceptor(
+            chain -> chain.proceed( securityContext.apply( chain.request() ) ) ).build();
         this.converterFactory = converterFactory;
     }
 

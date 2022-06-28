@@ -29,8 +29,10 @@ package org.hisp.dhis.integration.sdk;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import org.hisp.dhis.api.v2_37_6.model.ApiToken;
 import org.hisp.dhis.api.v2_37_6.model.OrganisationUnit;
 import org.hisp.dhis.api.v2_37_6.model.OrganisationUnitLevel;
 import org.hisp.dhis.api.v2_37_6.model.WebMessage;
@@ -81,10 +83,24 @@ public final class Environment
 
         DHIS2_CONTAINER.start();
 
-        DHIS2_CLIENT = Dhis2ClientBuilder.newClient(
-            "http://" + Environment.getDhis2Container().getHost() + ":" + Environment.getDhis2Container()
-                .getFirstMappedPort() + "/api",
-            "admin", "district" ).build();
+        String dhis2BaseApiUrl = "http://" + Environment.getDhis2Container().getHost() + ":"
+            + Environment.getDhis2Container()
+                .getFirstMappedPort()
+            + "/api";
+
+        Dhis2Client basicCredentialsDhis2Client = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, "admin", "district" )
+            .build();
+
+        WebMessage webMessage = basicCredentialsDhis2Client.post( "apiToken" )
+            .withResource( new ApiToken().withAttributes( List.of(
+                Map.of( "allowedMethods", List.of( "GET", "POST", "DELETE", "PUT" ), "type", "MethodAllowedList" ) ) )
+                // FIXME: expire is set dynamically because 2.37 has expire type
+                // erroneously declared as an integer instead of long
+                .withAdditionalProperty( "expire", new Date().getTime() + 1000000 ) )
+            .transfer().returnAs( WebMessage.class );
+        String pat = (String) ((Map<String, Object>) webMessage.getResponse().get()).get( "key" );
+
+        DHIS2_CLIENT = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, pat ).build();
 
         ORG_UNIT_ID = createOrgUnit();
         createOrgUnitLevel();
@@ -96,7 +112,8 @@ public final class Environment
         OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme" ).withShortName( "Acme" )
             .withOpeningDate( new Date() );
 
-        return (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit ).transfer()
+        return (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit )
+            .transfer()
             .returnAs( WebMessage.class ).getResponse().get()).get( "uid" );
     }
 
