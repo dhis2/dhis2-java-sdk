@@ -29,13 +29,14 @@ package org.hisp.dhis.integration.sdk;
 
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
+import org.hisp.dhis.integration.sdk.api.security.SecurityContext;
 import org.hisp.dhis.integration.sdk.internal.converter.JacksonConverterFactory;
+import org.hisp.dhis.integration.sdk.internal.security.BasicCredentialsSecurityContext;
+import org.hisp.dhis.integration.sdk.internal.security.PersonalAccessTokenSecurityContext;
 
 public class Dhis2ClientBuilder
 {
-    private final String username;
-
-    private final String password;
+    private final SecurityContext securityContext;
 
     private final String baseApiUrl;
 
@@ -47,19 +48,39 @@ public class Dhis2ClientBuilder
 
     public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password )
     {
-        return new Dhis2ClientBuilder( baseApiUrl, username, password, 5, 300000 );
+        return newClient( baseApiUrl, username, password, 5, 300000 );
     }
 
-    public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password, int maxIdleConnections, long keepAliveDuration )
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, String personalAccessToken )
     {
-        return new Dhis2ClientBuilder( baseApiUrl, username, password, maxIdleConnections, keepAliveDuration );
+        return newClient( baseApiUrl, personalAccessToken, 5, 300000 );
     }
 
-    private Dhis2ClientBuilder( String baseApiUrl, String username, String password, int maxIdleConnections, long keepAliveDuration )
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password,
+        int maxIdleConnections, long keepAliveDuration )
+    {
+        return new Dhis2ClientBuilder( baseApiUrl, new BasicCredentialsSecurityContext( username, password ),
+            maxIdleConnections, keepAliveDuration );
+    }
+
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, String personalAccessToken, int maxIdleConnections,
+        long keepAliveDuration )
+    {
+        return new Dhis2ClientBuilder( baseApiUrl, new PersonalAccessTokenSecurityContext( personalAccessToken ),
+            maxIdleConnections, keepAliveDuration );
+    }
+
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, SecurityContext securityContext,
+        int maxIdleConnections, long keepAliveDuration )
+    {
+        return new Dhis2ClientBuilder( baseApiUrl, securityContext, maxIdleConnections, keepAliveDuration );
+    }
+
+    private Dhis2ClientBuilder( String baseApiUrl, SecurityContext securityContext, int maxIdleConnections,
+        long keepAliveDuration )
     {
         this.baseApiUrl = baseApiUrl.trim();
-        this.username = username;
-        this.password = password;
+        this.securityContext = securityContext;
         this.maxIdleConnections = maxIdleConnections;
         this.keepAliveDuration = keepAliveDuration;
     }
@@ -78,6 +99,7 @@ public class Dhis2ClientBuilder
         {
             apiPathStringBuilder.append( "/" );
         }
-        return new DefaultDhis2Client( apiPathStringBuilder.toString(), username, password, converterFactory, maxIdleConnections, keepAliveDuration );
+        return new DefaultDhis2Client( apiPathStringBuilder.toString(), securityContext, converterFactory,
+            maxIdleConnections, keepAliveDuration );
     }
 }
