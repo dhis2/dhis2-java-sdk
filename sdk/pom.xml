@@ -21,38 +21,6 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>io.committed</groupId>
-                <artifactId>speedy-spotless-maven-plugin</artifactId>
-                <version>0.1.3</version>
-                <executions>
-                    <execution>
-                        <id>install-formatter-hook</id>
-                        <goals>
-                            <goal>install-hooks</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <java>
-                        <eclipse>
-                            <file>DHISFormatter.xml</file>
-                            <version>4.9.0</version>
-                        </eclipse>
-                        <trimTrailingWhitespace/>
-                        <removeUnusedImports/>
-                        <importOrder>
-                            <order>
-                                java,javax,org,com
-                            </order>
-                        </importOrder>
-                        <licenseHeader>
-                            <file>license-header</file>
-                        </licenseHeader>
-                    </java>
-                    <lineEndings>UNIX</lineEndings>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>3.0.1</version>
