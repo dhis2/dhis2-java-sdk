@@ -2,7 +2,7 @@
 
 ![Build Status](https://github.com/dhis2/dhis2-java-sdk/workflows/CI/badge.svg)
 
-DHIS2 Java SDK is a _lightweight_ library, powered by [OkHttp](https://square.github.io/okhttp/), that hides the nuts and bolts of interacting with the DHIS2 Web API behind a fluent Java API and type-safe resource models.
+DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2 Web API interactions behind a fluent Java API and type-safe resource models. It is powered by [OkHttp](https://square.github.io/okhttp/) and compatible with Android.
 
 ## Minimum Requirements
 
@@ -99,7 +99,7 @@ Fetch all organisation units:
 import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
 ...
     
-Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits/{id}", "fdc6uOvgoji" )
+Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
         .withoutPaging().transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
 for ( OrganisationUnit organisationUnit : organisationUnits )
@@ -145,7 +145,7 @@ Fetch organisation units belonging to the third level of the organisation unit h
 import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
 ...
     
-Iterable<OrganisationUnit> organisationUnits = DHIS2_CLIENT.get( "organisationUnits/{id}", "fdc6uOvgoji" )
+Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
             .withFilter( "level:eq:3" )
             .withPaging().transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 

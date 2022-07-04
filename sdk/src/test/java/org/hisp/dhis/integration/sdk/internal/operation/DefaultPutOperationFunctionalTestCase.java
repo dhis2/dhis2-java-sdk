@@ -38,7 +38,7 @@ import org.junit.jupiter.api.Test;
 
 import io.restassured.RestAssured;
 
-public class DefaultPutOperationTestCase extends AbstractTestCase
+public class DefaultPutOperationFunctionalTestCase extends AbstractTestCase
 {
     @Test
     public void testTransfer()

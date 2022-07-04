@@ -27,35 +27,26 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
-import okhttp3.Call;
+import io.restassured.RestAssured;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import org.hisp.dhis.integration.sdk.api.operation.GetOperation;
+import org.hisp.dhis.integration.sdk.AbstractTestCase;
+import org.hisp.dhis.integration.sdk.api.Dhis2Response;
+import org.hisp.dhis.integration.sdk.internal.DefaultDhis2Response;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 
-import java.io.IOException;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
-public class DefaultGetOperationTestCase
+public class DefaultGetOperationFunctionalTestCase extends AbstractTestCase
 {
     @Test
-    public void testTransferGivenFields() throws IOException {
-        OkHttpClient okHttpClientMock = mock(OkHttpClient.class);
-        Call callMock = mock(Call.class);
-        Response responseMock = mock(Response.class);
+    public void testTransfer()
+    {
+        Dhis2Response dhis2Response = new DefaultGetOperation( RestAssured.baseURI + "/api", "me",
+            dhis2Client.getHttpClient(),
+            converterFactory ).transfer();
 
-        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
-        when(callMock.execute()).thenReturn(responseMock);
-        when(okHttpClientMock.newCall(requestArgumentCaptor.capture())).thenReturn(callMock);
-        when(responseMock.isSuccessful()).thenReturn(true);
-
-        GetOperation getOperation = new DefaultGetOperation("https://play.dhis2.org/2.38.0/api", "", okHttpClientMock, null, null).withFields("id");
-        getOperation.transfer();
-        assertEquals("fields=id", requestArgumentCaptor.getValue().url().url().getQuery());
+        assertTrue( ((DefaultDhis2Response) dhis2Response).getResponse().isSuccessful() );
     }
 }
