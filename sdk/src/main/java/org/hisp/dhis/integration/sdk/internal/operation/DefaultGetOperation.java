@@ -67,7 +67,7 @@ public class DefaultGetOperation extends AbstractOperation implements GetOperati
                 fieldsAsString.append( field ).append( "," );
             }
 
-            httpUrlBuilder.addQueryParameter( "fields", fieldsAsString.substring( 0, fieldsAsString.length() - 2 ) );
+            httpUrlBuilder.addQueryParameter( "fields", fieldsAsString.substring( 0, fieldsAsString.length() - 1 ) );
         }
         if ( filter != null )
         {
