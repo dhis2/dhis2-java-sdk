@@ -34,10 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.hisp.dhis.api.model.v2_37_6.ApiToken;
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnitLevel;
-import org.hisp.dhis.api.model.v2_37_6.WebMessage;
+import org.hisp.dhis.api.model.v2_38_1.ApiToken;
+import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_38_1.OrganisationUnitLevel;
+import org.hisp.dhis.api.model.v2_38_1.WebMessage;
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.GenericContainer;

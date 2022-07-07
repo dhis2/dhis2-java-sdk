@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
 import org.junit.jupiter.api.Test;

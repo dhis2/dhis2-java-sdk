@@ -33,8 +33,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.37.6</sourceDirectory>
-                            <targetPackage>org.hisp.dhis.api.android.model.v2_37_6</targetPackage>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.38.1</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v2_38_1</targetPackage>
                         </configuration>
                     </execution>
                     <execution>
@@ -43,8 +43,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.36.10</sourceDirectory>
-                            <targetPackage>org.hisp.dhis.api.android.model.v2_36_10</targetPackage>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.37.7</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v2_37_7</targetPackage>
                         </configuration>
                     </execution>
                     <execution>
@@ -53,8 +53,8 @@
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.35.13</sourceDirectory>
-                            <targetPackage>org.hisp.dhis.api.android.model.v2_35_13</targetPackage>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.36.11</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v2_36_11</targetPackage>
                         </configuration>
                     </execution>
                 </executions>
