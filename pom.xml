@@ -9,6 +9,30 @@
     <packaging>pom</packaging>
     <version>1.0.0-RC1</version>
 
+    <name>DHIS2 Java SDK</name>
+    <url>https://github.com/dhis2/dhis2-java-sdk</url>
+    <description>Java SDK for DHIS2</description>
+
+    <licenses>
+        <license>
+            <name>BSD</name>
+            <url>http://opensource.org/licenses/BSD-2-Clause</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:dhis2/dhis2-java-sdk.git</connection>
+        <developerConnection>scm:git:git@github.com:dhis2/dhis2-java-sdk.git</developerConnection>
+        <url>git@github.com:dhis2/dhis2-java-sdk.git</url>
+    </scm>
+
+    <developers>
+        <developer>
+            <name>HISP Centre</name>
+            <email>developers@dhis2.org</email>
+        </developer>
+    </developers>
+
     <modules>
         <module>android-jackson-model</module>
         <module>jackson-model</module>
@@ -41,6 +65,27 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.3.1</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
