@@ -1,11 +1,11 @@
-package org.hisp.dhis.integration.sdk.support.period;
+package org.hisp.dhis.integration.sdk.support.period.type;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-abstract class AbstractPeriod
+public abstract class AbstractPeriod
 {
     private static final int WEEK_DAYS = 7;
 

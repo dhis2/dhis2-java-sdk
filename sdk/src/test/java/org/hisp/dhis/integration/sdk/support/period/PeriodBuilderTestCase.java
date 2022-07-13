@@ -21,8 +21,32 @@ public class PeriodBuilderTestCase
     }
 
     @Test
+    public void testBiMonthOf()
+    {
+        assertEquals( "202204B", PeriodBuilder.biMonthOf( new Date( 1657626227255L ) ) );
+    }
+
+    @Test
+    public void testSixMonthOf()
+    {
+        assertEquals( "2022S2", PeriodBuilder.sixMonthOf( new Date( 1657626227255L ) ) );
+    }
+
+    @Test
+    public void testFinancialYearStartingNovOf()
+    {
+        assertEquals( "2022Nov", PeriodBuilder.financialYearStartingNovOf( new Date( 1657626227255L ) ) );
+    }
+
+    @Test
     public void testYearOf()
     {
         assertEquals( "2022", PeriodBuilder.yearOf( new Date( 1657626227255L ) ) );
+    }
+
+    @Test
+    public void testYearOfWithOffset()
+    {
+        assertEquals( "2021", PeriodBuilder.yearOf( new Date( 1657626227255L ), -1 ) );
     }
 }

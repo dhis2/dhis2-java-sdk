@@ -1,15 +1,15 @@
-package org.hisp.dhis.integration.sdk.support.period;
+package org.hisp.dhis.integration.sdk.support.period.type;
 
 import java.util.Calendar;
 import java.util.Date;
 
-class WeeklyPeriod extends AbstractPeriod
+public class WeeklyPeriod extends AbstractPeriod
 {
     private final int weekStartDay;
 
     private final String suffix;
 
-    WeeklyPeriod( Calendar calendar, int weekStartDay, String suffix )
+    public WeeklyPeriod( Calendar calendar, int weekStartDay, String suffix )
     {
         super( calendar, "yyyy" );
         this.weekStartDay = weekStartDay;

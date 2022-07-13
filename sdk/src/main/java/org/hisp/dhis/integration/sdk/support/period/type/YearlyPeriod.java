@@ -1,14 +1,14 @@
-package org.hisp.dhis.integration.sdk.support.period;
+package org.hisp.dhis.integration.sdk.support.period.type;
 
 import java.util.Calendar;
 
 public class YearlyPeriod extends AbstractPeriod
 {
-    private final int firstMonth;
+    protected final int firstMonth;
 
-    private final String suffix;
+    protected final String suffix;
 
-    YearlyPeriod( Calendar calendar, int firstMonth, String suffix )
+    public YearlyPeriod( Calendar calendar, int firstMonth, String suffix )
     {
         super( calendar, "yyyy" );
         this.firstMonth = firstMonth;

@@ -1,18 +1,17 @@
-package org.hisp.dhis.integration.sdk.support.period;
+package org.hisp.dhis.integration.sdk.support.period.type;
 
 import java.util.Calendar;
 
-class MonthlyPeriod extends AbstractPeriod
+public class DailyPeriod extends AbstractPeriod
 {
-    MonthlyPeriod( Calendar calendar )
+    public DailyPeriod( Calendar calendar )
     {
-        super( calendar, "yyyyMM" );
+        super( calendar, "yyyyMMdd" );
     }
 
     @Override
     protected void moveToStartOfCurrentPeriod()
     {
-        calendar.set( Calendar.DAY_OF_MONTH, 1 );
     }
 
     @Override
@@ -24,6 +23,6 @@ class MonthlyPeriod extends AbstractPeriod
     @Override
     protected void movePeriods( int number )
     {
-        calendar.add( Calendar.MONTH, number );
+        calendar.add( Calendar.DATE, number );
     }
 }
