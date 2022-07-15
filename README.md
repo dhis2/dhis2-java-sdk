@@ -1,5 +1,7 @@
 # DHIS2 Java SDK
 
+![Maven Central](https://img.shields.io/maven-central/v/org.hisp.dhis.integration.sdk/dhis2-java-sdk)
+![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/org.hisp.dhis.integration.sdk/dhis2-java-sdk?server=https%3A%2F%2Foss.sonatype.org)
 ![Build Status](https://github.com/dhis2/dhis2-java-sdk/workflows/CI/badge.svg)
 
 DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2 Web API interactions behind a fluent Java API and type-safe resource models. It is powered by [OkHttp](https://square.github.io/okhttp/) and compatible with Android.
