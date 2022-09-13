@@ -34,9 +34,9 @@ import org.hisp.dhis.integration.sdk.api.converter.ResponseConverter;
 public class JacksonConverterFactory implements ConverterFactory
 {
     @Override
-    public RequestConverter createRequestConverter( Object requestType )
+    public <T> RequestConverter<T> createRequestConverter( Class<T> requestType )
     {
-        return new JacksonRequestConverter();
+        return new JacksonRequestConverter<>(requestType);
     }
 
     @Override

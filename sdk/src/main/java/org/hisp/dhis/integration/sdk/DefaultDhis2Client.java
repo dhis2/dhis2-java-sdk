@@ -93,7 +93,7 @@ public class DefaultDhis2Client implements Dhis2Client
     @Override
     public DeleteOperation delete( String path, String... pathParams )
     {
-        return new DefaultDeleteOperation( apiUrl, path, httpClient, converterFactory );
+        return new DefaultDeleteOperation( apiUrl, path, httpClient, converterFactory, pathParams );
     }
 
     @Override

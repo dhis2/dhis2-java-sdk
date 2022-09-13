@@ -60,7 +60,7 @@ public abstract class AbstractResourceOperation extends AbstractOperation implem
             }
             else
             {
-                bytes = converterFactory.createRequestConverter( requestBuilder.build() ).convert( resource )
+                bytes = converterFactory.createRequestConverter( (Class) resource.getClass() ).convert( resource )
                     .getBytes();
             }
         }

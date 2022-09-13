@@ -27,7 +27,7 @@
  */
 package org.hisp.dhis.integration.sdk.api.converter;
 
-public interface RequestConverter
+public interface RequestConverter<T>
 {
-    String convert( Object requestBody );
+    String convert( T requestBody );
 }
