@@ -29,7 +29,7 @@ package org.hisp.dhis.integration.sdk.api.converter;
 
 public interface ConverterFactory
 {
-    RequestConverter createRequestConverter( Object requestType );
+    <T> RequestConverter<T> createRequestConverter( Class<T> requestType );
 
     <T> ResponseConverter<T> createResponseConverter( Class<T> responseType );
 }
