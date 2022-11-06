@@ -48,4 +48,6 @@ public interface Dhis2Client
     DeleteOperation delete( String path, String... pathParams );
 
     OkHttpClient getHttpClient();
+
+    String getApiUrl();
 }

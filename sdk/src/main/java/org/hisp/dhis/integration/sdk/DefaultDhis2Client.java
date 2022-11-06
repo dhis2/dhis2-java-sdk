@@ -86,8 +86,6 @@ public class DefaultDhis2Client implements Dhis2Client
     public PatchOperation patch( String path, String... pathParams )
     {
         throw new UnsupportedOperationException();
-        // return new DefaultPatchOperation( apiUrl + path, httpClient,
-        // converterFactory );
     }
 
     @Override
@@ -100,5 +98,11 @@ public class DefaultDhis2Client implements Dhis2Client
     public OkHttpClient getHttpClient()
     {
         return httpClient;
+    }
+
+    @Override
+    public String getApiUrl()
+    {
+        return apiUrl;
     }
 }
