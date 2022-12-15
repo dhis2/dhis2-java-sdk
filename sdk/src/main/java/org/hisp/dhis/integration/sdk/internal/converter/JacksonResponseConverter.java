@@ -39,13 +39,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class JacksonResponseConverter<T> implements ResponseConverter<T>
 {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
     private final Class<T> returnType;
 
-    public JacksonResponseConverter( Class<T> returnType )
+    private final ObjectMapper objectMapper;
+
+    public JacksonResponseConverter( Class<T> returnType, ObjectMapper objectMapper )
     {
         this.returnType = returnType;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class JacksonResponseConverter<T> implements ResponseConverter<T>
     {
         try
         {
-            return OBJECT_MAPPER.readValue( responseBody.charStream(), returnType );
+            return objectMapper.readValue( responseBody.charStream(), returnType );
         }
         catch ( IOException e )
         {
@@ -68,7 +69,7 @@ public class JacksonResponseConverter<T> implements ResponseConverter<T>
     @Override
     public T convert( List<Map<String, Object>> responseBody )
     {
-        return OBJECT_MAPPER.convertValue( responseBody,
-            OBJECT_MAPPER.getTypeFactory().constructCollectionLikeType( List.class, returnType ) );
+        return objectMapper.convertValue( responseBody,
+            objectMapper.getTypeFactory().constructCollectionLikeType( List.class, returnType ) );
     }
 }

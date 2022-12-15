@@ -28,21 +28,20 @@
 package org.hisp.dhis.integration.sdk.internal.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.hisp.dhis.integration.sdk.api.converter.RequestConverter;
 
 import java.io.IOException;
 
 public class JacksonRequestConverter<T> implements RequestConverter<T>
 {
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(
-        new Jdk8Module().configureAbsentsAsNulls( true ) );
-
     private final Class<T> requestType;
 
-    public JacksonRequestConverter( Class<T> requestType )
+    private final ObjectMapper objectMapper;
+
+    public JacksonRequestConverter( Class<T> requestType, ObjectMapper objectMapper )
     {
         this.requestType = requestType;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -50,7 +49,7 @@ public class JacksonRequestConverter<T> implements RequestConverter<T>
     {
         try
         {
-            return OBJECT_MAPPER.writeValueAsString( requestBody );
+            return objectMapper.writeValueAsString( requestBody );
         }
         catch ( IOException e )
         {

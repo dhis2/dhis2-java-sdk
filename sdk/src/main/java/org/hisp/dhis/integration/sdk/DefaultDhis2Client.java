@@ -54,11 +54,15 @@ public class DefaultDhis2Client implements Dhis2Client
     private final ConverterFactory converterFactory;
 
     DefaultDhis2Client( String apiUrl, SecurityContext securityContext, ConverterFactory converterFactory,
-        int maxIdleConnections, long keepAliveDuration )
+        int maxIdleConnections, long keepAliveDuration, long callTimeout, long readTimeout, long writeTimeout,
+        long connectTimeout )
     {
         this.apiUrl = apiUrl;
         OkHttpClient.Builder httpClientBuilder = new OkHttpClient.Builder()
-            .connectionPool( new ConnectionPool( maxIdleConnections, keepAliveDuration, TimeUnit.MILLISECONDS ) );
+            .connectionPool( new ConnectionPool( maxIdleConnections, keepAliveDuration, TimeUnit.MILLISECONDS ) )
+            .callTimeout( callTimeout, TimeUnit.MILLISECONDS ).readTimeout( readTimeout, TimeUnit.MILLISECONDS )
+            .writeTimeout( writeTimeout, TimeUnit.MILLISECONDS )
+            .connectTimeout( connectTimeout, TimeUnit.MILLISECONDS );
         httpClient = httpClientBuilder.addInterceptor(
             chain -> chain.proceed( securityContext.apply( chain.request() ) ) ).build();
         this.converterFactory = converterFactory;

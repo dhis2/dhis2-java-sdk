@@ -27,21 +27,35 @@
  */
 package org.hisp.dhis.integration.sdk.internal.converter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.converter.RequestConverter;
 import org.hisp.dhis.integration.sdk.api.converter.ResponseConverter;
 
 public class JacksonConverterFactory implements ConverterFactory
 {
+    private final ObjectMapper objectMapper;
+
+    public JacksonConverterFactory( ObjectMapper objectMapper )
+    {
+        this.objectMapper = objectMapper;
+    }
+
+    public JacksonConverterFactory()
+    {
+        this.objectMapper = new ObjectMapper().registerModule( new Jdk8Module().configureAbsentsAsNulls( true ) );
+    }
+
     @Override
     public <T> RequestConverter<T> createRequestConverter( Class<T> requestType )
     {
-        return new JacksonRequestConverter<>(requestType);
+        return new JacksonRequestConverter<>( requestType, objectMapper );
     }
 
     @Override
     public <T> ResponseConverter<T> createResponseConverter( Class<T> responseType )
     {
-        return new JacksonResponseConverter<>( responseType );
+        return new JacksonResponseConverter<>( responseType, objectMapper );
     }
 }
