@@ -35,7 +35,7 @@ import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.ResourceOperation;
 
-public abstract class AbstractResourceOperation extends AbstractOperation implements ResourceOperation
+public abstract class AbstractResourceOperation extends AbstractOperation<Dhis2Response> implements ResourceOperation
 {
     protected Object resource;
 

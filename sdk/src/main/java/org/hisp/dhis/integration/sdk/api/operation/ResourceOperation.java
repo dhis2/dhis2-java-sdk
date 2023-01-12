@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.integration.sdk.api.operation;
 
-public interface ResourceOperation extends ParameterizedOperation
+import org.hisp.dhis.integration.sdk.api.Dhis2Response;
+
+public interface ResourceOperation extends ParameterizedOperation<Dhis2Response>
 {
     ResourceOperation withResource( Object resource );
 }

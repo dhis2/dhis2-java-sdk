@@ -29,13 +29,11 @@ package org.hisp.dhis.integration.sdk.api.operation;
 
 import java.util.Map;
 
-import org.hisp.dhis.integration.sdk.api.Dhis2Response;
-
-public interface ParameterizedOperation
+public interface ParameterizedOperation<T>
 {
-    ParameterizedOperation withParameters( Map<String, String> parameters );
+    ParameterizedOperation<T> withParameters( Map<String, String> parameters );
 
-    ParameterizedOperation withParameter( String name, String value );
+    ParameterizedOperation<T> withParameter( String name, String value );
 
-    Dhis2Response transfer();
+    T transfer();
 }

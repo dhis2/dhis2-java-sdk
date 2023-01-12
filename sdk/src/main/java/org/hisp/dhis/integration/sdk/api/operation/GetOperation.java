@@ -27,7 +27,9 @@
  */
 package org.hisp.dhis.integration.sdk.api.operation;
 
-public interface GetOperation extends ParameterizedOperation
+import org.hisp.dhis.integration.sdk.api.Dhis2Response;
+
+public interface GetOperation extends ParameterizedOperation<Dhis2Response>
 {
     PagingCollectOperation withPaging();
 

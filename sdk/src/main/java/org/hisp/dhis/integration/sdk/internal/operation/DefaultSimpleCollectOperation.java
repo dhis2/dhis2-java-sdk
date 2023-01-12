@@ -27,21 +27,27 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
+import okhttp3.OkHttpClient;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.ParameterizedOperation;
 import org.hisp.dhis.integration.sdk.api.operation.SimpleCollectOperation;
 import org.hisp.dhis.integration.sdk.internal.SimpleIterableDhis2Response;
 
-public class DefaultSimpleCollectOperation implements SimpleCollectOperation
+import java.util.Map;
+
+public class DefaultSimpleCollectOperation extends AbstractOperation<SimpleIterableDhis2Response>
+    implements SimpleCollectOperation
 {
     private final ConverterFactory converterFactory;
 
-    private final ParameterizedOperation parameterizedOperation;
+    private final ParameterizedOperation<Dhis2Response> parameterizedOperation;
 
-    public DefaultSimpleCollectOperation( ConverterFactory converterFactory,
-        ParameterizedOperation parameterizedOperation )
+    public DefaultSimpleCollectOperation( String baseApiUrl, String path, OkHttpClient httpClient,
+        ConverterFactory converterFactory, ParameterizedOperation<Dhis2Response> parameterizedOperation,
+        String... pathParams )
     {
+        super( baseApiUrl, path, httpClient, converterFactory, pathParams );
         this.converterFactory = converterFactory;
         this.parameterizedOperation = parameterizedOperation;
     }
@@ -51,5 +57,19 @@ public class DefaultSimpleCollectOperation implements SimpleCollectOperation
     {
         Dhis2Response dhis2Response = parameterizedOperation.withParameter( "paging", "false" ).transfer();
         return new SimpleIterableDhis2Response( dhis2Response, converterFactory );
+    }
+
+    @Override
+    public ParameterizedOperation<SimpleIterableDhis2Response> withParameters( Map<String, String> parameters )
+    {
+        parameterizedOperation.withParameters( parameters );
+        return this;
+    }
+
+    @Override
+    public ParameterizedOperation<SimpleIterableDhis2Response> withParameter( String name, String value )
+    {
+        parameterizedOperation.withParameter( name, value );
+        return this;
     }
 }

@@ -29,7 +29,7 @@ package org.hisp.dhis.integration.sdk.api.operation;
 
 import org.hisp.dhis.integration.sdk.internal.LazyIterableDhis2Response;
 
-public interface PagingCollectOperation
+public interface PagingCollectOperation extends ParameterizedOperation<LazyIterableDhis2Response>
 {
     LazyIterableDhis2Response transfer();
 }

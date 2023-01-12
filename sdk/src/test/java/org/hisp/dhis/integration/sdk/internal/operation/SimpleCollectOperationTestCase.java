@@ -45,9 +45,11 @@ public class SimpleCollectOperationTestCase extends AbstractTestCase
     public void testTransfer()
     {
         Iterable<OrganisationUnit> organisationUnitIterable = new DefaultSimpleCollectOperation(
-            converterFactory,
+            RestAssured.baseURI + "/api", "me",
+            dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory ) ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
+                converterFactory )
+        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
         List<OrganisationUnit> organisationAsUnits = StreamSupport
             .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );

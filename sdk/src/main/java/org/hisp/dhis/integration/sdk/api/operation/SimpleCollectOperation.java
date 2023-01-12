@@ -27,9 +27,10 @@
  */
 package org.hisp.dhis.integration.sdk.api.operation;
 
+import org.hisp.dhis.integration.sdk.internal.LazyIterableDhis2Response;
 import org.hisp.dhis.integration.sdk.internal.SimpleIterableDhis2Response;
 
-public interface SimpleCollectOperation
+public interface SimpleCollectOperation extends ParameterizedOperation<SimpleIterableDhis2Response>
 {
     SimpleIterableDhis2Response transfer();
 }

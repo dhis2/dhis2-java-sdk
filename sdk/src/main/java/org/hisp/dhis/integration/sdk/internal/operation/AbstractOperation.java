@@ -38,11 +38,10 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import org.hisp.dhis.integration.sdk.api.Dhis2ClientException;
-import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.ParameterizedOperation;
 
-public abstract class AbstractOperation implements ParameterizedOperation
+public abstract class AbstractOperation<T> implements ParameterizedOperation<T>
 {
     protected final String url;
 
@@ -52,11 +51,17 @@ public abstract class AbstractOperation implements ParameterizedOperation
 
     protected final Map<String, List<String>> queryParams = new HashMap<>();
 
-    private final String[] pathParams;
+    protected final String baseApiUrl;
+
+    protected final String[] pathParams;
+
+    protected final String path;
 
     public AbstractOperation( String baseApiUrl, String path, OkHttpClient httpClient,
         ConverterFactory converterFactory, String... pathParams )
     {
+        this.baseApiUrl = baseApiUrl;
+        this.path = path;
         this.url = (baseApiUrl.endsWith( "/" ) ? baseApiUrl : baseApiUrl + "/")
             + (path != null && path.startsWith( "/" ) ? path.substring( 1 ) : path);
         this.httpClient = httpClient;
@@ -65,7 +70,7 @@ public abstract class AbstractOperation implements ParameterizedOperation
     }
 
     @Override
-    public Dhis2Response transfer()
+    public T transfer()
     {
         HttpUrl httpUrl = HttpUrl.parse( url );
         HttpUrl.Builder httpUrlBuilder = httpUrl.newBuilder();
@@ -92,16 +97,19 @@ public abstract class AbstractOperation implements ParameterizedOperation
         return doTransfer( httpUrlBuilder.build() );
     }
 
-    public abstract Dhis2Response doTransfer( HttpUrl httpUrl );
+    protected T doTransfer( HttpUrl httpUrl )
+    {
+        throw new UnsupportedOperationException();
+    }
 
     @Override
-    public ParameterizedOperation withParameters( Map<String, String> parameters )
+    public ParameterizedOperation<T> withParameters( Map<String, String> parameters )
     {
         return this;
     }
 
     @Override
-    public ParameterizedOperation withParameter( String name, String value )
+    public ParameterizedOperation<T> withParameter( String name, String value )
     {
         List<String> values = queryParams.get( name );
         if ( values == null )

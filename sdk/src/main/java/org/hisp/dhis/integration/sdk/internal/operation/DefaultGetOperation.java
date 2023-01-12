@@ -43,7 +43,7 @@ import org.hisp.dhis.integration.sdk.api.operation.SimpleCollectOperation;
 import org.hisp.dhis.integration.sdk.internal.DefaultDhis2Response;
 import org.hisp.dhis.integration.sdk.internal.operation.page.DefaultPagingCollectOperation;
 
-public class DefaultGetOperation extends AbstractOperation implements GetOperation
+public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implements GetOperation
 {
     protected final List<String> fields = new ArrayList<>();
 
@@ -82,13 +82,13 @@ public class DefaultGetOperation extends AbstractOperation implements GetOperati
     @Override
     public PagingCollectOperation withPaging()
     {
-        return new DefaultPagingCollectOperation( converterFactory, this, httpClient );
+        return new DefaultPagingCollectOperation( baseApiUrl, path, httpClient, converterFactory, this, pathParams );
     }
 
     @Override
     public SimpleCollectOperation withoutPaging()
     {
-        return new DefaultSimpleCollectOperation( converterFactory, this );
+        return new DefaultSimpleCollectOperation( baseApiUrl, path, httpClient, converterFactory, this, pathParams );
     }
 
     @Override

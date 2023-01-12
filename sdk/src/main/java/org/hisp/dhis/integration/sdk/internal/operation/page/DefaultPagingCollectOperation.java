@@ -31,30 +31,44 @@ import okhttp3.OkHttpClient;
 
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
-import org.hisp.dhis.integration.sdk.api.operation.GetOperation;
 import org.hisp.dhis.integration.sdk.api.operation.PagingCollectOperation;
+import org.hisp.dhis.integration.sdk.api.operation.ParameterizedOperation;
 import org.hisp.dhis.integration.sdk.internal.LazyIterableDhis2Response;
+import org.hisp.dhis.integration.sdk.internal.operation.AbstractOperation;
 
-public class DefaultPagingCollectOperation implements PagingCollectOperation
+import java.util.Map;
+
+public class DefaultPagingCollectOperation extends AbstractOperation<LazyIterableDhis2Response>
+    implements PagingCollectOperation
 {
-    private final ConverterFactory converterFactory;
+    private final ParameterizedOperation<Dhis2Response> parameterizedOperation;
 
-    private final OkHttpClient httpClient;
-
-    private final GetOperation getOperation;
-
-    public DefaultPagingCollectOperation( ConverterFactory converterFactory, GetOperation getOperation,
-        OkHttpClient httpClient )
+    public DefaultPagingCollectOperation( String baseApiUrl, String path, OkHttpClient httpClient,
+        ConverterFactory converterFactory, ParameterizedOperation<Dhis2Response> parameterizedOperation,
+        String... pathParams )
     {
-        this.converterFactory = converterFactory;
-        this.httpClient = httpClient;
-        this.getOperation = getOperation;
+        super( baseApiUrl, path, httpClient, converterFactory, pathParams );
+        this.parameterizedOperation = parameterizedOperation;
     }
 
     @Override
     public LazyIterableDhis2Response transfer()
     {
-        final Dhis2Response dhis2Response = getOperation.transfer();
+        final Dhis2Response dhis2Response = parameterizedOperation.transfer();
         return new LazyIterableDhis2Response( dhis2Response, converterFactory, httpClient );
+    }
+
+    @Override
+    public ParameterizedOperation<LazyIterableDhis2Response> withParameters( Map<String, String> parameters )
+    {
+        parameterizedOperation.withParameters( parameters );
+        return this;
+    }
+
+    @Override
+    public ParameterizedOperation<LazyIterableDhis2Response> withParameter( String name, String value )
+    {
+        parameterizedOperation.withParameter( name, value );
+        return this;
     }
 }

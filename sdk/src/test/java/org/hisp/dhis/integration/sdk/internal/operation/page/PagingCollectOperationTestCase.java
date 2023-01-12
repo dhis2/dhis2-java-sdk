@@ -27,29 +27,29 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation.page;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
+import io.restassured.RestAssured;
 import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
 import org.junit.jupiter.api.Test;
 
-import io.restassured.RestAssured;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class PagingCollectOperationTestCase extends AbstractTestCase
 {
     @Test
     public void testTransfer()
     {
-        Iterable<OrganisationUnit> organisationUnitIterable = new DefaultPagingCollectOperation( converterFactory,
+        Iterable<OrganisationUnit> organisationUnitIterable = new DefaultPagingCollectOperation(
+            RestAssured.baseURI + "/api", "me",
+            dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory ),
-            dhis2Client.getHttpClient() ).transfer()
-                .returnAs( OrganisationUnit.class, "organisationUnits" );
+                converterFactory )
+        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
         List<OrganisationUnit> organisationAsUnits = StreamSupport
             .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );
