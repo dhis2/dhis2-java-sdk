@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dhis2-java-sdk-pom</artifactId>
         <groupId>org.hisp.dhis.integration.sdk</groupId>
-        <version>1.0.0-RC4-SNAPSHOT</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -28,7 +28,17 @@
                 </configuration>
                 <executions>
                     <execution>
-                        <id>v2.37.6</id>
+                        <id>v2.39.1</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.39.1</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.model.v2_39_1</targetPackage>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v2.38.1</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
@@ -38,23 +48,13 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>v2.36.10</id>
+                        <id>v2.37.7</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.37.7</sourceDirectory>
                             <targetPackage>org.hisp.dhis.api.model.v2_37_7</targetPackage>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>v2.35.13</id>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.36.11</sourceDirectory>
-                            <targetPackage>org.hisp.dhis.api.model.v2_36_11</targetPackage>
                         </configuration>
                     </execution>
                 </executions>

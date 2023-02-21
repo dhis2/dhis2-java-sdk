@@ -54,7 +54,14 @@ public class JacksonResponseConverter<T> implements ResponseConverter<T>
     {
         try
         {
-            return objectMapper.readValue( responseBody.charStream(), returnType );
+            if ( returnType.equals( String.class ) )
+            {
+                return (T) responseBody.string();
+            }
+            else
+            {
+                return objectMapper.readValue( responseBody.charStream(), returnType );
+            }
         }
         catch ( IOException e )
         {
