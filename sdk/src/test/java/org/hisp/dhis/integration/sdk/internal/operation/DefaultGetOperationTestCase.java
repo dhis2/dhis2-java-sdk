@@ -44,18 +44,62 @@ import static org.mockito.Mockito.when;
 public class DefaultGetOperationTestCase
 {
     @Test
-    public void testTransferGivenFields() throws IOException {
-        OkHttpClient okHttpClientMock = mock(OkHttpClient.class);
-        Call callMock = mock(Call.class);
-        Response responseMock = mock(Response.class);
+    public void testTransferGivenFields()
+        throws
+        IOException
+    {
+        OkHttpClient okHttpClientMock = mock( OkHttpClient.class );
+        Call callMock = mock( Call.class );
+        Response responseMock = mock( Response.class );
 
-        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass(Request.class);
-        when(callMock.execute()).thenReturn(responseMock);
-        when(okHttpClientMock.newCall(requestArgumentCaptor.capture())).thenReturn(callMock);
-        when(responseMock.isSuccessful()).thenReturn(true);
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass( Request.class );
+        when( callMock.execute() ).thenReturn( responseMock );
+        when( okHttpClientMock.newCall( requestArgumentCaptor.capture() ) ).thenReturn( callMock );
+        when( responseMock.isSuccessful() ).thenReturn( true );
 
-        GetOperation getOperation = new DefaultGetOperation("https://play.dhis2.org/2.38.0/api", "", okHttpClientMock, null, null).withFields("id");
+        GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
+            null ).withFields( "id" );
         getOperation.transfer();
-        assertEquals("fields=id", requestArgumentCaptor.getValue().url().url().getQuery());
+        assertEquals( "fields=id", requestArgumentCaptor.getValue().url().url().getQuery() );
+    }
+
+    @Test
+    public void testTransferGivenOrRootJunction()
+        throws
+        IOException
+    {
+        OkHttpClient okHttpClientMock = mock( OkHttpClient.class );
+        Call callMock = mock( Call.class );
+        Response responseMock = mock( Response.class );
+
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass( Request.class );
+        when( callMock.execute() ).thenReturn( responseMock );
+        when( okHttpClientMock.newCall( requestArgumentCaptor.capture() ) ).thenReturn( callMock );
+        when( responseMock.isSuccessful() ).thenReturn( true );
+
+        GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
+            null ).withOrRootJunction();
+        getOperation.transfer();
+        assertEquals( "rootJunction=OR", requestArgumentCaptor.getValue().url().url().getQuery() );
+    }
+
+    @Test
+    public void testTransferGivenAndRootJunction()
+        throws
+        IOException
+    {
+        OkHttpClient okHttpClientMock = mock( OkHttpClient.class );
+        Call callMock = mock( Call.class );
+        Response responseMock = mock( Response.class );
+
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass( Request.class );
+        when( callMock.execute() ).thenReturn( responseMock );
+        when( okHttpClientMock.newCall( requestArgumentCaptor.capture() ) ).thenReturn( callMock );
+        when( responseMock.isSuccessful() ).thenReturn( true );
+
+        GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
+            null ).withAndRootJunction();
+        getOperation.transfer();
+        assertEquals( "rootJunction=AND", requestArgumentCaptor.getValue().url().url().getQuery() );
     }
 }
