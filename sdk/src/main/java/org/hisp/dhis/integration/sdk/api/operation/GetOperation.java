@@ -41,4 +41,8 @@ public interface GetOperation extends ParameterizedOperation<Dhis2Response>
 
     GetOperation withFilter( String filter );
 
+    GetOperation withOrRootJunction();
+
+    GetOperation withAndRootJunction();
+
 }

@@ -49,6 +49,8 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
 
     protected String filter;
 
+    protected String rootJunction;
+
     public DefaultGetOperation( String baseApiUrl, String path, OkHttpClient httpClient,
         ConverterFactory converterFactory, String... pathParams )
     {
@@ -72,6 +74,11 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
         if ( filter != null )
         {
             httpUrlBuilder.addQueryParameter( "filter", filter );
+        }
+
+        if ( rootJunction != null )
+        {
+            httpUrlBuilder.addQueryParameter( "rootJunction", rootJunction );
         }
 
         okhttp3.Response response = onHttpResponse(
@@ -109,6 +116,20 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
     public GetOperation withFilter( String filter )
     {
         this.filter = filter;
+        return this;
+    }
+
+    @Override
+    public GetOperation withOrRootJunction()
+    {
+        rootJunction = "OR";
+        return this;
+    }
+
+    @Override
+    public GetOperation withAndRootJunction()
+    {
+        rootJunction = "AND";
         return this;
     }
 }
