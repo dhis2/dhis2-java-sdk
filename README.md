@@ -18,14 +18,42 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
 
 ### Maven Release Distribution
 
+#### Java API
 ```xml
 <project>
     ...
     <dependencies>
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
+            <artifactId>jackson-resource-model</artifactId>
+            <classifier>[v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>[version]</version>
+            <version>2.0.0</version>
+        </dependency>
+        ...
+    </dependencies>
+</project>
+```
+
+#### Android API
+```xml
+<project>
+    ...
+    <dependencies>
+        <dependency>
+            <groupId>org.hisp.dhis.integration.sdk</groupId>
+            <artifactId>android-jackson-resource-model</artifactId>
+            <classifier>[v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hisp.dhis.integration.sdk</groupId>
+            <artifactId>dhis2-java-sdk</artifactId>
+            <version>2.0.0</version>
         </dependency>
         ...
     </dependencies>
@@ -38,10 +66,11 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
 <project>
     ...
     <dependencies>
+        ...
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>[version]-SNAPSHOT</version>
+            <version>2.0.0-SNAPSHOT</version>
         </dependency>
         ...
     </dependencies>
@@ -88,7 +117,7 @@ Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/
 Fetch an organisation unit:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 OrganisationUnit organisationUnit = dhis2Client.get( "organisationUnits/{id}", "fdc6uOvgoji" ).transfer()
@@ -98,7 +127,7 @@ OrganisationUnit organisationUnit = dhis2Client.get( "organisationUnits/{id}", "
 Fetch all organisation units:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -113,7 +142,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch organisation units over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -128,7 +157,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch all organisation units IDs over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -144,7 +173,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch organisation units belonging to the third level of the organisation unit hierarchy over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -160,27 +189,27 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Create a Tracked Entity Instance:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_6.AggregationType;
-import org.hisp.dhis.api.model.v2_37_6.AnalyticsPeriodBoundary;
-import org.hisp.dhis.api.model.v2_37_6.Attribute;
-import org.hisp.dhis.api.model.v2_37_6.AttributeValue;
-import org.hisp.dhis.api.model.v2_37_6.Attribute__1;
-import org.hisp.dhis.api.model.v2_37_6.CategoryCombo;
-import org.hisp.dhis.api.model.v2_37_6.DataElement;
-import org.hisp.dhis.api.model.v2_37_6.DataValue__2;
-import org.hisp.dhis.api.model.v2_37_6.DescriptiveWebMessage;
-import org.hisp.dhis.api.model.v2_37_6.Enrollment;
-import org.hisp.dhis.api.model.v2_37_6.Event;
-import org.hisp.dhis.api.model.v2_37_6.EventChart;
-import org.hisp.dhis.api.model.v2_37_6.ImportSummaries;
-import org.hisp.dhis.api.model.v2_37_6.OptionSet;
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_37_6.OrganisationUnitLevel;
-import org.hisp.dhis.api.model.v2_37_6.Program;
-import org.hisp.dhis.api.model.v2_37_6.ProgramIndicator;
-import org.hisp.dhis.api.model.v2_37_6.TrackedEntityAttributeValue;
-import org.hisp.dhis.api.model.v2_37_6.TrackedEntityInstance;
-import org.hisp.dhis.api.model.v2_37_6.WebMessage;
+import org.hisp.dhis.api.model.v2_37_7.AggregationType;
+import org.hisp.dhis.api.model.v2_37_7.AnalyticsPeriodBoundary;
+import org.hisp.dhis.api.model.v2_37_7.Attribute;
+import org.hisp.dhis.api.model.v2_37_7.AttributeValue;
+import org.hisp.dhis.api.model.v2_37_7.Attribute__1;
+import org.hisp.dhis.api.model.v2_37_7.CategoryCombo;
+import org.hisp.dhis.api.model.v2_37_7.DataElement;
+import org.hisp.dhis.api.model.v2_37_7.DataValue__2;
+import org.hisp.dhis.api.model.v2_37_7.DescriptiveWebMessage;
+import org.hisp.dhis.api.model.v2_37_7.Enrollment;
+import org.hisp.dhis.api.model.v2_37_7.Event;
+import org.hisp.dhis.api.model.v2_37_7.EventChart;
+import org.hisp.dhis.api.model.v2_37_7.ImportSummaries;
+import org.hisp.dhis.api.model.v2_37_7.OptionSet;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_37_7.OrganisationUnitLevel;
+import org.hisp.dhis.api.model.v2_37_7.Program;
+import org.hisp.dhis.api.model.v2_37_7.ProgramIndicator;
+import org.hisp.dhis.api.model.v2_37_7.TrackedEntityAttributeValue;
+import org.hisp.dhis.api.model.v2_37_7.TrackedEntityInstance;
+import org.hisp.dhis.api.model.v2_37_7.WebMessage;
 ...
 
 TrackedEntityInstance tei = new TrackedEntityInstance().withAttributes(
