@@ -38,6 +38,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
 import org.hisp.dhis.integration.sdk.api.Dhis2ClientException;
+import org.hisp.dhis.integration.sdk.api.RemoteDhis2ClientException;
 import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.ParameterizedOperation;
 
@@ -124,25 +125,24 @@ public abstract class AbstractOperation<T> implements ParameterizedOperation<T>
 
     protected Response onHttpResponse( Callable<Response> callable )
     {
-        Response response = null;
+        Response response;
         try
         {
             response = callable.call();
-            if ( !response.isSuccessful() )
-            {
-                response.close();
-                throw new Dhis2ClientException( response.toString() );
-            }
         }
         catch ( Exception e )
         {
-            if ( response != null )
-            {
-                response.close();
-            }
             throw new Dhis2ClientException( e );
         }
 
-        return response;
+        if ( !response.isSuccessful() )
+        {
+            response.close();
+            throw new RemoteDhis2ClientException( response.toString(), response.code() );
+        }
+        else
+        {
+            return response;
+        }
     }
 }
