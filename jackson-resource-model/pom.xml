@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dhis2-java-sdk-pom</artifactId>
         <groupId>org.hisp.dhis.integration.sdk</groupId>
-        <version>2.0.0</version>
+        <version>2.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -28,6 +28,16 @@
                     <serializable>true</serializable>
                 </configuration>
                 <executions>
+                    <execution>
+                        <id>v40.0</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v40.0</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.model.v40_0</targetPackage>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>v2.39.1</id>
                         <goals>
@@ -152,6 +162,20 @@
                                 <include>org/hisp/dhis/api/model/v2_39_1/**</include>
                             </includes>
                             <classifier>v2.39.1</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v40.0</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/model/v40_0/**</include>
+                            </includes>
+                            <classifier>v40</classifier>
                         </configuration>
                     </execution>
                 </executions>
