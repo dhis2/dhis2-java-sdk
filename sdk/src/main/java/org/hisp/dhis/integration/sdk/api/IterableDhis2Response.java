@@ -29,5 +29,5 @@ package org.hisp.dhis.integration.sdk.api;
 
 public interface IterableDhis2Response
 {
-    <T> Iterable<T> returnAs( Class<T> responseType, String collectionName );
+    <T> Iterable<T> returnAs( Class<T> responseType, String arrayName );
 }

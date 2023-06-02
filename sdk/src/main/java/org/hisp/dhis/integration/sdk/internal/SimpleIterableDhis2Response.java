@@ -47,11 +47,11 @@ public class SimpleIterableDhis2Response implements IterableDhis2Response
     }
 
     @Override
-    public <T> Iterable<T> returnAs( Class<T> responseType, String collectionName )
+    public <T> Iterable<T> returnAs( Class<T> responseType, String arrayName)
     {
         Map<String, Object> resources = dhis2Response.returnAs( Map.class );
         return (List<T>) converterFactory.createResponseConverter( responseType )
-            .convert( (List<Map<String, Object>>) resources.get( collectionName ) );
+            .convert( (List<Map<String, Object>>) resources.get(arrayName) );
     }
 
     public <T> Iterable<T> returnAs( Class<T> responseType )
