@@ -175,7 +175,7 @@
                             <includes>
                                 <include>org/hisp/dhis/api/model/v40_0/**</include>
                             </includes>
-                            <classifier>v40</classifier>
+                            <classifier>v40.0</classifier>
                         </configuration>
                     </execution>
                 </executions>
