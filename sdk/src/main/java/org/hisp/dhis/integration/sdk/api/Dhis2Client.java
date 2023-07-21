@@ -29,6 +29,7 @@ package org.hisp.dhis.integration.sdk.api;
 
 import okhttp3.OkHttpClient;
 
+import org.hisp.dhis.integration.sdk.api.converter.ConverterFactory;
 import org.hisp.dhis.integration.sdk.api.operation.DeleteOperation;
 import org.hisp.dhis.integration.sdk.api.operation.GetOperation;
 import org.hisp.dhis.integration.sdk.api.operation.PatchOperation;
@@ -50,4 +51,6 @@ public interface Dhis2Client
     OkHttpClient getHttpClient();
 
     String getApiUrl();
+
+    ConverterFactory getConverterFactory();
 }

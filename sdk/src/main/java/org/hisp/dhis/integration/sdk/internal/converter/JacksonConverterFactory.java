@@ -48,14 +48,20 @@ public class JacksonConverterFactory implements ConverterFactory
     }
 
     @Override
+    public JacksonConverter createConverter()
+    {
+        return new JacksonConverter( objectMapper );
+    }
+
+    @Override
     public <T> RequestConverter<T> createRequestConverter( Class<T> requestType )
     {
-        return new JacksonRequestConverter<>( requestType, objectMapper );
+        return new JacksonRequestConverter<>( requestType, createConverter() );
     }
 
     @Override
     public <T> ResponseConverter<T> createResponseConverter( Class<T> responseType )
     {
-        return new JacksonResponseConverter<>( responseType, objectMapper );
+        return new JacksonResponseConverter<>( responseType, createConverter() );
     }
 }

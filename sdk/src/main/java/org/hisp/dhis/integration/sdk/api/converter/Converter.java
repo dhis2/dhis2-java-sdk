@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2022, University of Oslo
+ * Copyright (c) 2004-2023, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,11 +27,16 @@
  */
 package org.hisp.dhis.integration.sdk.api.converter;
 
-public interface ConverterFactory
+import java.io.Reader;
+import java.util.List;
+
+public interface Converter
 {
-    Converter createConverter();
+    String convert(Object from);
 
-    <T> RequestConverter<T> createRequestConverter( Class<T> requestType );
+    <T> T convert( Object from, Class<T> toType );
 
-    <T> ResponseConverter<T> createResponseConverter( Class<T> responseType );
+    <T> T convert( Reader source, Class<T> sourceType);
+
+    <T> T convert( List<?> from, Class<T> toCollectionType, Class<?> toElementType );
 }
