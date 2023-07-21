@@ -36,24 +36,17 @@ public class JacksonRequestConverter<T> implements RequestConverter<T>
 {
     private final Class<T> requestType;
 
-    private final ObjectMapper objectMapper;
+    private final JacksonConverter jacksonConverter;
 
-    public JacksonRequestConverter( Class<T> requestType, ObjectMapper objectMapper )
+    public JacksonRequestConverter( Class<T> requestType, JacksonConverter jacksonConverter )
     {
         this.requestType = requestType;
-        this.objectMapper = objectMapper;
+        this.jacksonConverter = jacksonConverter;
     }
 
     @Override
     public String convert( T requestBody )
     {
-        try
-        {
-            return objectMapper.writeValueAsString( requestBody );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
-        }
+        return jacksonConverter.convert( requestBody );
     }
 }

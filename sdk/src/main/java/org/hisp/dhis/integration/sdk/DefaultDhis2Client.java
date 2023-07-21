@@ -109,4 +109,10 @@ public class DefaultDhis2Client implements Dhis2Client
     {
         return apiUrl;
     }
+
+    @Override
+    public ConverterFactory getConverterFactory()
+    {
+        return converterFactory;
+    }
 }

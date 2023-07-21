@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004-2022, University of Oslo
+ * Copyright (c) 2004-2023, University of Oslo
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,54 +27,65 @@
  */
 package org.hisp.dhis.integration.sdk.internal.converter;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import okhttp3.ResponseBody;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hisp.dhis.integration.sdk.api.Dhis2ClientException;
-import org.hisp.dhis.integration.sdk.api.converter.ResponseConverter;
+import org.hisp.dhis.integration.sdk.api.converter.Converter;
 
-public class JacksonResponseConverter<T> implements ResponseConverter<T>
+import java.io.IOException;
+import java.io.Reader;
+import java.util.List;
+
+public class JacksonConverter implements Converter
 {
-    private final Class<T> returnType;
+    private final ObjectMapper objectMapper;
 
-    private final JacksonConverter jacksonConverter;
-
-    public JacksonResponseConverter( Class<T> returnType, JacksonConverter jacksonConverter )
+    public JacksonConverter( ObjectMapper objectMapper )
     {
-        this.returnType = returnType;
-        this.jacksonConverter = jacksonConverter;
+        this.objectMapper = objectMapper;
     }
 
     @Override
-    public T convert( ResponseBody responseBody )
+    public String convert( Object from )
     {
         try
         {
-            if ( returnType.equals( String.class ) )
-            {
-                return (T) responseBody.string();
-            }
-            else
-            {
-                return jacksonConverter.convert( responseBody.charStream(), returnType );
-            }
+            return objectMapper.writeValueAsString( from );
+        }
+        catch ( JsonProcessingException e )
+        {
+            throw new Dhis2ClientException( e );
+        }
+    }
+
+    @Override
+    public <T> T convert( Object from, Class<T> toType )
+    {
+        return objectMapper.convertValue( from, toType );
+    }
+
+    @Override
+    public <T> T convert( Reader source, Class<T> toType )
+    {
+        try
+        {
+            return objectMapper.readValue( source, toType );
         }
         catch ( IOException e )
         {
             throw new Dhis2ClientException( e );
         }
-        finally
-        {
-            responseBody.close();
-        }
     }
 
     @Override
-    public T convert( List<Map<String, Object>> responseBody )
+    public <T> T convert( List<?> from, Class<T> toCollectionType, Class<?> toElementType )
     {
-        return (T) jacksonConverter.convert( responseBody, List.class, returnType);
+        return objectMapper.convertValue( from,
+            objectMapper.getTypeFactory().constructCollectionLikeType( toCollectionType, toElementType ) );
+    }
+
+    public ObjectMapper getObjectMapper()
+    {
+        return objectMapper;
     }
 }
