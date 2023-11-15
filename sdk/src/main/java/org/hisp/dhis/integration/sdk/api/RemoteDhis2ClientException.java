@@ -31,14 +31,22 @@ public class RemoteDhis2ClientException extends Dhis2ClientException
 {
     private final int httpStatusCode;
 
-    public RemoteDhis2ClientException( String message, int httpStatusCode )
+    private final String body;
+
+    public RemoteDhis2ClientException( String message, int httpStatusCode, String body )
     {
         super( message );
         this.httpStatusCode = httpStatusCode;
+        this.body = body;
     }
 
     public int getHttpStatusCode()
     {
         return httpStatusCode;
+    }
+
+    public String getBody()
+    {
+        return body;
     }
 }
