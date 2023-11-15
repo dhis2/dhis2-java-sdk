@@ -57,8 +57,7 @@ public class AbstractOperationTestCase
         when( responseMock.code() ).thenReturn( 1 );
         when( responseMock.body() ).thenReturn( responseBodyMock );
 
-        AbstractOperation<?> resourceOperation = new AbstractOperation<Object>( "http://example", "", null,
-            new JacksonConverterFactory() )
+        AbstractOperation<?> resourceOperation = new AbstractOperation<Object>( "http://example", null, null, null )
         {
             @Override
             protected Object doTransfer( HttpUrl httpUrl )
