@@ -31,7 +31,6 @@ import okhttp3.HttpUrl;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.hisp.dhis.integration.sdk.api.RemoteDhis2ClientException;
-import org.hisp.dhis.integration.sdk.internal.converter.JacksonConverterFactory;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
