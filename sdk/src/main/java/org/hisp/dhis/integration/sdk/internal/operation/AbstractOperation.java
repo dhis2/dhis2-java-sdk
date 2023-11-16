@@ -27,6 +27,7 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -137,8 +138,20 @@ public abstract class AbstractOperation<T> implements ParameterizedOperation<T>
 
         if ( !response.isSuccessful() )
         {
+            String body = null;
+            try
+            {
+                if ( response.body() != null )
+                {
+                    body = response.body().string();
+                }
+            }
+            catch ( IOException e )
+            {
+                throw new Dhis2ClientException( e );
+            }
             response.close();
-            throw new RemoteDhis2ClientException( response.toString(), response.code() );
+            throw new RemoteDhis2ClientException( response.toString(), response.code(), body );
         }
         else
         {
