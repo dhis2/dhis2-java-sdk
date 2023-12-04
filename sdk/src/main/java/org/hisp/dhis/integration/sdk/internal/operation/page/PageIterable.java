@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 
@@ -43,12 +44,6 @@ import org.hisp.dhis.integration.sdk.internal.DefaultDhis2Response;
 
 public class PageIterable<T> implements Iterable<T>
 {
-    private Dhis2Response dhis2Response;
-
-    private Page currentPage;
-
-    private Iterator<T> currentIterator;
-
     private final ConverterFactory converterFactory;
 
     private final String collectionName;
@@ -57,11 +52,26 @@ public class PageIterable<T> implements Iterable<T>
 
     private final OkHttpClient httpClient;
 
+    private DefaultDhis2Response dhis2Response;
+
+    private Page currentPage;
+
+    private Page firstPage;
+
+    private Iterator<T> currentIterator;
+
+    private String url;
+
+    private boolean lastPage;
+
     public PageIterable( String collectionName, ConverterFactory converterFactory,
-        OkHttpClient httpClient, Class<T> responseType, Page firstPage )
+        OkHttpClient httpClient, Class<T> responseType, Dhis2Response dhis2Response )
     {
+        this.firstPage = dhis2Response.returnAs( Page.class );
         List<T> collection = (List<T>) converterFactory.createResponseConverter( responseType )
             .convert( (List<Map<String, Object>>) firstPage.getAdditionalProperties().get( collectionName ) );
+        this.dhis2Response = (DefaultDhis2Response) dhis2Response;
+        this.url = ((DefaultDhis2Response) dhis2Response).getResponse().request().url().toString();
         this.currentIterator = collection.iterator();
 
         this.currentPage = firstPage;
@@ -69,6 +79,7 @@ public class PageIterable<T> implements Iterable<T>
         this.converterFactory = converterFactory;
         this.httpClient = httpClient;
         this.responseType = responseType;
+        this.lastPage = false;
     }
 
     @Override
@@ -83,14 +94,17 @@ public class PageIterable<T> implements Iterable<T>
                 {
                     return true;
                 }
-                else if ( currentPage.getPager().getPage() >= currentPage.getPager().getPageCount() )
-                {
-                    return false;
-                }
                 else
                 {
-                    currentIterator = fetchPage();
-                    return currentIterator.hasNext();
+                    if ( !lastPage )
+                    {
+                        currentIterator = fetchPage();
+                        return currentIterator.hasNext();
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
 
@@ -106,10 +120,11 @@ public class PageIterable<T> implements Iterable<T>
 
             private Iterator<T> fetchPage()
             {
+                int nextPageNumber = currentPage.getPage() + 1;
                 try
                 {
                     dhis2Response = new DefaultDhis2Response( httpClient.newCall(
-                        new Request.Builder().url( currentPage.getPager().getNextPage() ).build() ).execute(),
+                        new Request.Builder().url( constructEndpointUrl( nextPageNumber ) ).build() ).execute(),
                         converterFactory );
                 }
                 catch ( IOException e )
@@ -119,9 +134,20 @@ public class PageIterable<T> implements Iterable<T>
 
                 currentPage = dhis2Response.returnAs( Page.class );
                 List<T> collection = (List<T>) converterFactory.createResponseConverter( responseType )
-                    .convert(
-                        (List<Map<String, Object>>) currentPage.getAdditionalProperties().get( collectionName ) );
+                    .convert( (List<Map<String, Object>>) currentPage.getAdditionalProperties().get( collectionName ) );
+                if ( collection.isEmpty() )
+                {
+                    lastPage = true;
+                }
                 return collection.iterator();
+            }
+
+            private String constructEndpointUrl( int nextPageNumber )
+            {
+                HttpUrl httpUrl = HttpUrl.parse( url ).newBuilder()
+                    .addQueryParameter( "page", String.valueOf( nextPageNumber ) )
+                    .build();
+                return httpUrl.toString();
             }
 
         };

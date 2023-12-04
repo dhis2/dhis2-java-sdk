@@ -27,16 +27,32 @@
  */
 package org.hisp.dhis.integration.sdk;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.hisp.dhis.api.model.v2_38_1.ApiToken;
+import org.hisp.dhis.api.model.v2_38_1.Attribute__2;
+import org.hisp.dhis.api.model.v2_38_1.Attributes;
+import org.hisp.dhis.api.model.v2_38_1.DescriptiveWebMessage;
+import org.hisp.dhis.api.model.v2_38_1.Enrollment;
+import org.hisp.dhis.api.model.v2_38_1.Enrollment__2;
 import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
 import org.hisp.dhis.api.model.v2_38_1.OrganisationUnitLevel;
+import org.hisp.dhis.api.model.v2_38_1.TrackedEntity;
+import org.hisp.dhis.api.model.v2_38_1.TrackerImportReport;
 import org.hisp.dhis.api.model.v2_38_1.WebMessage;
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 import org.testcontainers.containers.BindMode;
@@ -46,12 +62,11 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public final class Environment
 {
-    private Environment()
-    {
-
-    }
+    public static final String ORG_UNIT_ID;
 
     private static final Network NETWORK = Network.newNetwork();
 
@@ -61,33 +76,31 @@ public final class Environment
 
     private static final Dhis2Client DHIS2_CLIENT;
 
-    public static final String ORG_UNIT_ID;
-
     static
     {
         POSTGRESQL_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse( "postgis/postgis:12-3.2-alpine" ).asCompatibleSubstituteFor( "postgres" ) )
-                .withDatabaseName( "dhis2" )
-                .withNetworkAliases( "db" )
-                .withUsername( "dhis" )
-                .withPassword( "dhis" ).withNetwork( NETWORK );
+            .withDatabaseName( "dhis2" )
+            .withNetworkAliases( "db" )
+            .withUsername( "dhis" )
+            .withPassword( "dhis" ).withNetwork( NETWORK );
 
         POSTGRESQL_CONTAINER.start();
 
         DHIS2_CONTAINER = new GenericContainer<>(
-            "dhis2/core:2.37.6-tomcat-8.5.34-jre8-alpine" )
-                .dependsOn( POSTGRESQL_CONTAINER )
-                .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
-                .withNetwork( NETWORK ).withExposedPorts( 8080 )
-                .waitingFor(
-                    new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
-                .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
+            "dhis2/core:2.38.1-tomcat-8.5-jdk11-openjdk-slim" )
+            .dependsOn( POSTGRESQL_CONTAINER )
+            .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
+            .withNetwork( NETWORK ).withExposedPorts( 8080 )
+            .waitingFor(
+                new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
+            .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
 
         DHIS2_CONTAINER.start();
 
         String dhis2BaseApiUrl = "http://" + Environment.getDhis2Container().getHost() + ":"
             + Environment.getDhis2Container()
-                .getFirstMappedPort()
+            .getFirstMappedPort()
             + "/api";
 
         Dhis2Client basicCredentialsDhis2Client = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, "admin", "district" )
@@ -119,12 +132,27 @@ public final class Environment
 
         ORG_UNIT_ID = createOrgUnit();
         createOrgUnitLevel();
+        String orgUnitLevelId = null;
+        for ( OrganisationUnitLevel organisationUnitLevel : DHIS2_CLIENT.get( "organisationUnitLevels" )
+            .withFields( "id" )
+            .withoutPaging().transfer().returnAs( OrganisationUnitLevel.class, "organisationUnitLevels" ) )
+        {
+            orgUnitLevelId = organisationUnitLevel.getId().get();
+        }
+        importMetaData( Objects.requireNonNull( orgUnitLevelId ) );
+        addOrgUnitToTrackerProgram( ORG_UNIT_ID );
         addOrgUnitToUser( ORG_UNIT_ID );
+    }
+
+    private Environment()
+    {
+
     }
 
     private static String createOrgUnit()
     {
         OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme" ).withShortName( "Acme" )
+            .withCode( "ACME" )
             .withOpeningDate( new Date() );
 
         return (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit )
@@ -132,16 +160,116 @@ public final class Environment
             .returnAs( WebMessage.class ).getResponse().get()).get( "uid" );
     }
 
+    public static List<String> createTestOrgUnits( int numberOfOrgUnits )
+    {
+        List<String> orgUnitIds = new ArrayList<>();
+        for ( int i = 0; i < numberOfOrgUnits; i++ )
+        {
+            OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme " + i )
+                .withShortName( "Acme " + i )
+                .withOpeningDate( new Date() );
+            orgUnitIds.add( (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" )
+                .withResource( organisationUnit )
+                .transfer()
+                .returnAs( WebMessage.class ).getResponse().get()).get( "uid" ) );
+        }
+        return orgUnitIds;
+    }
+
+    public static void deleteTestOrgUnits( List<String> orgUnitIds )
+    {
+        for ( String orgUnitId : orgUnitIds )
+        {
+            DHIS2_CLIENT.delete( "organisationUnits/{orgUnitId}", orgUnitId ).transfer();
+        }
+    }
+
     private static void createOrgUnitLevel()
     {
-        OrganisationUnitLevel organisationUnitLevel = new OrganisationUnitLevel().withName( "Level 1" )
-            .with( "level", 1 );
-        DHIS2_CLIENT.post( "filledOrganisationUnitLevels" ).withResource( organisationUnitLevel ).transfer();
+        DHIS2_CLIENT.post( "filledOrganisationUnitLevels" )
+            .withResource( Map.of( "organisationUnitLevels",
+                List.of( new OrganisationUnitLevel().withName( "Level 1" ).withLevel( 1 ) ) ) )
+            .transfer();
     }
 
     private static void addOrgUnitToUser( String orgUnitId )
     {
         DHIS2_CLIENT.post( "users/M5zQapPyTZI/organisationUnits/{organisationUnitId}", orgUnitId ).transfer();
+    }
+
+    private static void addOrgUnitToTrackerProgram( String orgUnitId )
+    {
+        DHIS2_CLIENT.post( "programs/w0qPtIW0JYu/organisationUnits/{orgUnitId}", orgUnitId )
+            .transfer();
+    }
+
+    public static List<String> createDhis2TrackedEntitiesWithEnrollment( int numberOfTrackedEntities )
+        throws
+        IOException
+    {
+        List<String> trackedEntities = new ArrayList<>();
+        for ( int i = 0; i < numberOfTrackedEntities; i++ )
+        {
+            TrackedEntity trackedEntity = new TrackedEntity()
+                .withOrgUnit( ORG_UNIT_ID )
+                .withTrackedEntityType( "MCPQUTHX1Ze" )
+                .withEnrollments(
+                    List.of( new Enrollment__2()
+                        .withOrgUnit( ORG_UNIT_ID )
+                        .withProgram( "w0qPtIW0JYu" )
+                        .withEnrolledAt( "2023-01-01" )
+                        .withOccurredAt( "2023-01-01" )
+                        .withStatus( Enrollment__2.EnrollmentStatus.ACTIVE )
+                        .withAttributes( List.of(
+                            new Attribute__2().withAttribute( "HlKXyR5qr2e" ).withValue( String.format( "ID-%s", i ) ),
+                            new Attribute__2().withAttribute( "oindugucx72" )
+                                .withValue( "Male" ),
+                            new Attribute__2().withAttribute( "NI0QRzJvQ0k" )
+                                .withValue( "2023-01-01" )
+                        ) ) ) );
+            String trackedEntityId = DHIS2_CLIENT.post( "tracker" )
+                .withResource( Map.of( "trackedEntities", List.of( trackedEntity ) ) )
+                .withParameter( "async", "false" )
+                .transfer()
+                .returnAs( TrackerImportReport.class ).getBundleReport().get().getTypeReportMap().get()
+                .getAdditionalProperties().get( "TRACKED_ENTITY" ).getObjectReports().get().get( 0 ).getUid().get();
+            trackedEntities.add( trackedEntityId );
+
+        }
+        return trackedEntities;
+    }
+
+    public static void deleteDhis2TrackedEntities( List<String> trackedEntities )
+        throws
+        IOException
+    {
+        for ( String trackedEntity : trackedEntities )
+        {
+            DHIS2_CLIENT.delete( "trackedEntityInstances/{trackedEntityId}", trackedEntity )
+                .transfer()
+                .close();
+        }
+    }
+
+    private static void importMetaData( String orgUnitLevelId )
+    {
+        String metaData = null;
+        try ( InputStream inputStream = Thread.currentThread().getContextClassLoader()
+            .getResourceAsStream( "IDS_AFI_COMPLETE_1.0.0_DHIS2.38.json" );
+            BufferedReader reader = new BufferedReader(
+                new InputStreamReader( inputStream, Charset.defaultCharset() ) ) )
+        {
+            String content = reader.lines().collect( Collectors.joining( "\n" ) );
+            metaData = content.replaceAll( "<OU_LEVEL_DISTRICT_UID>", orgUnitLevelId );
+        }
+        catch ( IOException e )
+        {
+            e.printStackTrace();
+        }
+        WebMessage webMessage = DHIS2_CLIENT.post( "metadata" )
+            .withResource( metaData )
+            .withParameter( "atomicMode", "NONE" ).transfer().returnAs( WebMessage.class );
+        assertEquals( DescriptiveWebMessage.Status.OK, webMessage.getStatus().get() );
     }
 
     public static GenericContainer<?> getDhis2Container()

@@ -54,7 +54,7 @@ public class LazyIterableDhis2Response implements IterableDhis2Response
     @Override
     public <T> Iterable<T> returnAs( Class<T> responseType, String arrayName )
     {
-        Page firstPage = dhis2Response.returnAs( Page.class );
-        return new PageIterable<>( arrayName, converterFactory, httpClient, responseType, firstPage );
+
+        return new PageIterable<>( arrayName, converterFactory, httpClient, responseType, dhis2Response );
     }
 }

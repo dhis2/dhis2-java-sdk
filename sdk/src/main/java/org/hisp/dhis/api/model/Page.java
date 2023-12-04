@@ -30,18 +30,60 @@ package org.hisp.dhis.api.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties( ignoreUnknown = true )
 public class Page
 {
-    private Pager pager;
-
     @JsonIgnore
     private final Map<String, Object> additionalProperties = new HashMap<>();
+
+    private Pager pager;
+
+    private Integer page;
+
+    private Integer pageSize;
+
+    public Page()
+    {
+
+    }
+
+    public Integer getPage()
+    {
+        if ( page == null && pager != null )
+        {
+            return pager.getPage();
+        }
+        return page;
+    }
+
+    @JsonProperty( "page" )
+    public void setPage( Integer page )
+    {
+        this.page = page;
+    }
+
+    public Integer getPageSize()
+    {
+        if ( pageSize == null && pager != null )
+        {
+            return pager.getPageSize();
+        }
+        return pageSize;
+    }
+
+    @JsonProperty( "pageSize" )
+    public void setPageSize( Integer pageSize )
+    {
+        this.pageSize = pageSize;
+    }
 
     public Pager getPager()
     {
@@ -63,6 +105,22 @@ public class Page
     public void setAdditionalProperty( String name, Object value )
     {
         this.additionalProperties.put( name, value );
+    }
+
+    @JsonCreator
+    public void initFieldsFromPager()
+    {
+        if ( pager != null )
+        {
+            if ( page == null )
+            {
+                page = pager.getPage();
+            }
+            if ( pageSize == null )
+            {
+                pageSize = pager.getPageSize();
+            }
+        }
     }
 
 }
