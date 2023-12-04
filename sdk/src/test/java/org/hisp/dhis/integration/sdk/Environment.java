@@ -31,10 +31,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -186,9 +188,11 @@ public final class Environment
 
     private static void createOrgUnitLevel()
     {
+        List<OrganisationUnitLevel> organisationUnitLevels = new ArrayList<>();
+        organisationUnitLevels.add( new OrganisationUnitLevel().withName( "Level 1" ).withLevel( 1 ) );
         DHIS2_CLIENT.post( "filledOrganisationUnitLevels" )
-            .withResource( Map.of( "organisationUnitLevels",
-                List.of( new OrganisationUnitLevel().withName( "Level 1" ).withLevel( 1 ) ) ) )
+            .withResource( Collections.singletonMap( "organisationUnitLevels",
+                organisationUnitLevels ) )
             .transfer();
     }
 
@@ -210,29 +214,35 @@ public final class Environment
         List<String> trackedEntities = new ArrayList<>();
         for ( int i = 0; i < numberOfTrackedEntities; i++ )
         {
+            List<Attribute__2> attributes = new ArrayList<>();
+            attributes.add(
+                new Attribute__2().withAttribute( "HlKXyR5qr2e" ).withValue( String.format( "ID-%s", i ) ) );
+            attributes.add( new Attribute__2().withAttribute( "oindugucx72" )
+                .withValue( "Male" ) );
+            attributes.add( new Attribute__2().withAttribute( "NI0QRzJvQ0k" )
+                .withValue( "2023-01-01" ) );
+
+            List<Enrollment__2> enrollment = new ArrayList<>();
+            enrollment.add( new Enrollment__2()
+                .withOrgUnit( ORG_UNIT_ID )
+                .withProgram( "w0qPtIW0JYu" )
+                .withEnrolledAt( "2023-01-01" )
+                .withOccurredAt( "2023-01-01" )
+                .withStatus( Enrollment__2.EnrollmentStatus.ACTIVE )
+                .withAttributes( attributes ) );
+
             TrackedEntity trackedEntity = new TrackedEntity()
                 .withOrgUnit( ORG_UNIT_ID )
                 .withTrackedEntityType( "MCPQUTHX1Ze" )
-                .withEnrollments(
-                    List.of( new Enrollment__2()
-                        .withOrgUnit( ORG_UNIT_ID )
-                        .withProgram( "w0qPtIW0JYu" )
-                        .withEnrolledAt( "2023-01-01" )
-                        .withOccurredAt( "2023-01-01" )
-                        .withStatus( Enrollment__2.EnrollmentStatus.ACTIVE )
-                        .withAttributes( List.of(
-                            new Attribute__2().withAttribute( "HlKXyR5qr2e" ).withValue( String.format( "ID-%s", i ) ),
-                            new Attribute__2().withAttribute( "oindugucx72" )
-                                .withValue( "Male" ),
-                            new Attribute__2().withAttribute( "NI0QRzJvQ0k" )
-                                .withValue( "2023-01-01" )
-                        ) ) ) );
+                .withEnrollments( enrollment );
+
             String trackedEntityId = DHIS2_CLIENT.post( "tracker" )
-                .withResource( Map.of( "trackedEntities", List.of( trackedEntity ) ) )
+                .withResource( Collections.singletonMap( "trackedEntities", Collections.singletonList( trackedEntity ) ) )
                 .withParameter( "async", "false" )
                 .transfer()
                 .returnAs( TrackerImportReport.class ).getBundleReport().get().getTypeReportMap().get()
-                .getAdditionalProperties().get( "TRACKED_ENTITY" ).getObjectReports().get().get( 0 ).getUid().get();
+                .getAdditionalProperties().get( "TRACKED_ENTITY" ).getObjectReports().get().get( 0 )
+                .getUid().get();
             trackedEntities.add( trackedEntityId );
 
         }
