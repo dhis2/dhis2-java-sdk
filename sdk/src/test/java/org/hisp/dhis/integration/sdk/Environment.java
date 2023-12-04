@@ -31,9 +31,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.nio.charset.Charset;
-import java.text.ParseException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -43,13 +41,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 import org.hisp.dhis.api.model.v2_38_1.ApiToken;
 import org.hisp.dhis.api.model.v2_38_1.Attribute__2;
-import org.hisp.dhis.api.model.v2_38_1.Attributes;
 import org.hisp.dhis.api.model.v2_38_1.DescriptiveWebMessage;
-import org.hisp.dhis.api.model.v2_38_1.Enrollment;
 import org.hisp.dhis.api.model.v2_38_1.Enrollment__2;
 import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
 import org.hisp.dhis.api.model.v2_38_1.OrganisationUnitLevel;
@@ -228,7 +223,6 @@ public final class Environment
                 .withProgram( "w0qPtIW0JYu" )
                 .withEnrolledAt( "2023-01-01" )
                 .withOccurredAt( "2023-01-01" )
-                .withStatus( Enrollment__2.EnrollmentStatus.ACTIVE )
                 .withAttributes( attributes ) );
 
             TrackedEntity trackedEntity = new TrackedEntity()
