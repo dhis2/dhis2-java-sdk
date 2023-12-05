@@ -52,25 +52,23 @@ public class PageIterable<T> implements Iterable<T>
 
     private final OkHttpClient httpClient;
 
-    private DefaultDhis2Response dhis2Response;
+    private Dhis2Response dhis2Response;
 
     private Page currentPage;
 
-    private Page firstPage;
-
     private Iterator<T> currentIterator;
 
-    private String url;
+    private final String url;
 
     private boolean lastPage;
 
     public PageIterable( String collectionName, ConverterFactory converterFactory,
         OkHttpClient httpClient, Class<T> responseType, Dhis2Response dhis2Response )
     {
-        this.firstPage = dhis2Response.returnAs( Page.class );
+        Page firstPage = dhis2Response.returnAs( Page.class );
         List<T> collection = (List<T>) converterFactory.createResponseConverter( responseType )
             .convert( (List<Map<String, Object>>) firstPage.getAdditionalProperties().get( collectionName ) );
-        this.dhis2Response = (DefaultDhis2Response) dhis2Response;
+        this.dhis2Response = dhis2Response;
         this.url = ((DefaultDhis2Response) dhis2Response).getResponse().request().url().toString();
         this.currentIterator = collection.iterator();
 
@@ -94,17 +92,14 @@ public class PageIterable<T> implements Iterable<T>
                 {
                     return true;
                 }
+                else if ( !lastPage )
+                {
+                    currentIterator = fetchPage();
+                    return currentIterator.hasNext();
+                }
                 else
                 {
-                    if ( !lastPage )
-                    {
-                        currentIterator = fetchPage();
-                        return currentIterator.hasNext();
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 
@@ -120,11 +115,11 @@ public class PageIterable<T> implements Iterable<T>
 
             private Iterator<T> fetchPage()
             {
-                int nextPageNumber = currentPage.getPage() + 1;
+                int nextPageNumber = currentPage.getPager().getPage() + 1;
                 try
                 {
                     dhis2Response = new DefaultDhis2Response( httpClient.newCall(
-                        new Request.Builder().url( constructEndpointUrl( nextPageNumber ) ).build() ).execute(),
+                        new Request.Builder().url( buildNextPageUrl( nextPageNumber ) ).build() ).execute(),
                         converterFactory );
                 }
                 catch ( IOException e )
@@ -142,7 +137,7 @@ public class PageIterable<T> implements Iterable<T>
                 return collection.iterator();
             }
 
-            private String constructEndpointUrl( int nextPageNumber )
+            private String buildNextPageUrl( int nextPageNumber )
             {
                 HttpUrl httpUrl = HttpUrl.parse( url ).newBuilder()
                     .addQueryParameter( "page", String.valueOf( nextPageNumber ) )

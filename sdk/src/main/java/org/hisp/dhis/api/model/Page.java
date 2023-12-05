@@ -32,6 +32,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -44,43 +45,10 @@ public class Page
 
     private Pager pager;
 
-    private Integer page;
-
-    private Integer pageSize;
-
-    public Page()
+    @JsonCreator
+    public Page( @JsonProperty("page") Integer page, @JsonProperty("pageSize") Integer pageSize )
     {
-
-    }
-
-    public Integer getPage()
-    {
-        if ( page == null && pager != null )
-        {
-            return pager.getPage();
-        }
-        return page;
-    }
-
-    @JsonProperty( "page" )
-    public void setPage( Integer page )
-    {
-        this.page = page;
-    }
-
-    public Integer getPageSize()
-    {
-        if ( pageSize == null && pager != null )
-        {
-            return pager.getPageSize();
-        }
-        return pageSize;
-    }
-
-    @JsonProperty( "pageSize" )
-    public void setPageSize( Integer pageSize )
-    {
-        this.pageSize = pageSize;
+        pager = new Pager().withPage(page).withPageSize(pageSize);
     }
 
     public Pager getPager()
