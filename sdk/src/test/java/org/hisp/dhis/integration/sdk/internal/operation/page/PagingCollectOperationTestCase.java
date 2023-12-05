@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PagingCollectOperationTestCase extends AbstractTestCase
 {
     @Test
-    public void testOnePageAggregateTransfer()
+    public void testTransferGivenOnePageOfOrganisationUnits()
     {
         List<String> orgUnitIds = Environment.createTestOrgUnits( 9 );
         Iterable<OrganisationUnit> organisationUnitIterable = new DefaultPagingCollectOperation(
@@ -62,7 +62,7 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
     }
 
     @Test
-    public void testMultiplePageAggregateTransfer()
+    public void testTransferGivenMultiplePagesOfOrganisationUnits()
     {
         List<String> orgUnitIds = Environment.createTestOrgUnits( 149 );
         Iterable<OrganisationUnit> organisationUnitIterable = new DefaultPagingCollectOperation(
@@ -80,7 +80,7 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
     }
 
     @Test
-    public void testOnePageTrackerTransfer()
+    public void testTransferGivenOnePageOfTrackedEntities()
         throws
         Exception
     {
@@ -103,7 +103,7 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
     }
 
     @Test
-    public void testMultiplePageTrackerTransfer()
+    public void testTransferGivenMultiplePagesOfTrackedEntities()
         throws
         Exception
     {
