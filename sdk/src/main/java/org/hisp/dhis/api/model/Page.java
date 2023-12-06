@@ -32,16 +32,24 @@ import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonIgnoreProperties( ignoreUnknown = true )
 public class Page
 {
-    private Pager pager;
-
     @JsonIgnore
     private final Map<String, Object> additionalProperties = new HashMap<>();
+
+    private Pager pager;
+
+    @JsonCreator
+    public Page( @JsonProperty("page") Integer page, @JsonProperty("pageSize") Integer pageSize )
+    {
+        pager = new Pager().withPage(page).withPageSize(pageSize);
+    }
 
     public Pager getPager()
     {
