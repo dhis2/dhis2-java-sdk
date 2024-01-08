@@ -34,69 +34,83 @@ import org.hisp.dhis.integration.sdk.internal.converter.JacksonConverterFactory;
 import org.hisp.dhis.integration.sdk.internal.security.BasicCredentialsSecurityContext;
 import org.hisp.dhis.integration.sdk.internal.security.PersonalAccessTokenSecurityContext;
 
+import java.util.concurrent.TimeUnit;
+
 public class Dhis2ClientBuilder
 {
     private final SecurityContext securityContext;
 
     private final String baseApiUrl;
 
-    private final int maxIdleConnections;
+    private int maxIdleConnections = 5;
 
-    private final long keepAliveDurationMs;
+    private long keepAliveDurationMs = 300000;
 
-    private final long callTimeoutMs;
+    private long callTimeoutMs = 0;
 
-    private final long readTimeoutMs;
+    private long readTimeoutMs = 10000;
 
-    private final long writeTimeoutMs;
+    private long writeTimeoutMs = 10000;
 
-    private final long connectTimeoutMs;
+    private long connectTimeoutMs = 10000;
 
     private ConverterFactory converterFactory = new JacksonConverterFactory();
 
     public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password )
     {
-        return newClient( baseApiUrl, username, password, 5, 300000 );
+        return new Dhis2ClientBuilder( baseApiUrl, new BasicCredentialsSecurityContext( username, password ) );
     }
 
     public static Dhis2ClientBuilder newClient( String baseApiUrl, String personalAccessToken )
     {
-        return newClient( baseApiUrl, personalAccessToken, 5, 300000, 0, 10000, 10000, 10000 );
+        return new Dhis2ClientBuilder( baseApiUrl, new PersonalAccessTokenSecurityContext( personalAccessToken ));
     }
 
-    public static Dhis2ClientBuilder newClient( String baseApiUrl, String username, String password,
-        int maxIdleConnections, long keepAliveDurationMs )
+    public static Dhis2ClientBuilder newClient( String baseApiUrl, SecurityContext securityContext )
     {
-        return new Dhis2ClientBuilder( baseApiUrl, new BasicCredentialsSecurityContext( username, password ),
-            maxIdleConnections, keepAliveDurationMs, 0, 10000, 10000, 10000 );
+        return new Dhis2ClientBuilder( baseApiUrl, securityContext);
     }
 
-    public static Dhis2ClientBuilder newClient( String baseApiUrl, String personalAccessToken, int maxIdleConnections,
-        long keepAliveDurationMs, long callTimeoutMs, long readTimeoutMs, long writeTimeoutMs, long connectTimeoutMs )
-    {
-        return new Dhis2ClientBuilder( baseApiUrl, new PersonalAccessTokenSecurityContext( personalAccessToken ),
-            maxIdleConnections, keepAliveDurationMs, callTimeoutMs, readTimeoutMs, writeTimeoutMs, connectTimeoutMs );
-    }
-
-    public static Dhis2ClientBuilder newClient( String baseApiUrl, SecurityContext securityContext,
-        int maxIdleConnections, long keepAliveDurationMs, long callTimeoutMs, long readTimeoutMs, long writeTimeoutMs,
-        long connectTimeoutMs )
-    {
-        return new Dhis2ClientBuilder( baseApiUrl, securityContext, maxIdleConnections, keepAliveDurationMs, callTimeoutMs,
-            readTimeoutMs, writeTimeoutMs, connectTimeoutMs );
-    }
-
-    private Dhis2ClientBuilder( String baseApiUrl, SecurityContext securityContext, int maxIdleConnections,
-        long keepAliveDurationMs, long callTimeoutMs, long readTimeoutMs, long writeTimeoutMs, long connectTimeout )
+    private Dhis2ClientBuilder( String baseApiUrl, SecurityContext securityContext )
     {
         this.baseApiUrl = baseApiUrl.trim();
         this.securityContext = securityContext;
+    }
+
+    public Dhis2ClientBuilder withMaxIdleConnections( int maxIdleConnections )
+    {
         this.maxIdleConnections = maxIdleConnections;
-        this.keepAliveDurationMs = keepAliveDurationMs;
-        this.callTimeoutMs = callTimeoutMs;
-        this.readTimeoutMs = readTimeoutMs;
-        this.writeTimeoutMs = writeTimeoutMs;
-        this.connectTimeoutMs = connectTimeout;
+        return this;
+    }
+
+    public Dhis2ClientBuilder withKeepAliveDuration( long keepAliveDuration, TimeUnit timeUnit )
+    {
+        this.keepAliveDurationMs = timeUnit.toMillis( keepAliveDuration );
+        return this;
+    }
+
+    public Dhis2ClientBuilder withCallTimeout( long callTimeout, TimeUnit timeUnit )
+    {
+        this.callTimeoutMs = timeUnit.toMillis( callTimeout );
+        return this;
+    }
+
+    public Dhis2ClientBuilder withReadTimeout( long readTimeout, TimeUnit timeUnit )
+    {
+        this.readTimeoutMs = timeUnit.toMillis( readTimeout );
+        return this;
+    }
+
+    public Dhis2ClientBuilder withWriteTimeout( long writeTimeout, TimeUnit timeUnit )
+    {
+        this.writeTimeoutMs = timeUnit.toMillis( writeTimeout );
+        return this;
+    }
+
+    public Dhis2ClientBuilder withConnectTimeout( long connectTimeout, TimeUnit timeUnit )
+    {
+        this.connectTimeoutMs = timeUnit.toMillis( connectTimeout );
+        return this;
     }
 
     public Dhis2ClientBuilder withConverterFactory( ConverterFactory converterFactory )
