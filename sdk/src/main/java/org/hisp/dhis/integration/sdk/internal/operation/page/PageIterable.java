@@ -69,9 +69,8 @@ public class PageIterable<T> implements Iterable<T>
         List<T> collection = (List<T>) converterFactory.createResponseConverter( responseType )
             .convert( (List<Map<String, Object>>) firstPage.getAdditionalProperties().get( collectionName ) );
         this.dhis2Response = dhis2Response;
-        this.url = ((DefaultDhis2Response) dhis2Response).getResponse().request().url().toString();
+        this.url = dhis2Response.getUrl();
         this.currentIterator = collection.iterator();
-
         this.currentPage = firstPage;
         this.collectionName = collectionName;
         this.converterFactory = converterFactory;

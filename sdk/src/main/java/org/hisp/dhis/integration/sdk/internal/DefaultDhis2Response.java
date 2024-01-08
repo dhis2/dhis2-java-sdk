@@ -58,6 +58,12 @@ public class DefaultDhis2Response implements Dhis2Response
         return response.body().byteStream();
     }
 
+    @Override
+    public String getUrl()
+    {
+        return response.request().url().toString();
+    }
+
     public Response getResponse()
     {
         return response;

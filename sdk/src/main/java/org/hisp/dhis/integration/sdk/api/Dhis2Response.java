@@ -36,4 +36,6 @@ public interface Dhis2Response extends Closeable
 
     InputStream read();
 
+    String getUrl();
+
 }
