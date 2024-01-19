@@ -106,9 +106,9 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
     }
 
     @Override
-    public GetOperation withFields( String names )
+    public GetOperation withField( String name )
     {
-        fields.add( names );
+        fields.add( name );
         return this;
     }
 

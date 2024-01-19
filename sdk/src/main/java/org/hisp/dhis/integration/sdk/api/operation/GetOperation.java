@@ -37,7 +37,7 @@ public interface GetOperation extends ParameterizedOperation<Dhis2Response>
 
     GetOperation withFields( String... names );
 
-    GetOperation withFields( String names );
+    GetOperation withField( String names );
 
     GetOperation withFilter( String filter );
 

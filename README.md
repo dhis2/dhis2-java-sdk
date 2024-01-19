@@ -70,7 +70,7 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>2.1.1-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         ...
     </dependencies>
@@ -161,7 +161,7 @@ import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
-            .withFields( "id" )
+            .withField( "id" )
             .withPaging().transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
 for ( OrganisationUnit organisationUnit : organisationUnits )

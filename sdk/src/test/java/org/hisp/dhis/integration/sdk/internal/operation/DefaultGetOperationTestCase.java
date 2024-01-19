@@ -58,7 +58,7 @@ public class DefaultGetOperationTestCase
         when( responseMock.isSuccessful() ).thenReturn( true );
 
         GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
-            null ).withFields( "id" );
+            null ).withField( "id" );
         getOperation.transfer();
         assertEquals( "fields=id", requestArgumentCaptor.getValue().url().url().getQuery() );
     }

@@ -131,7 +131,7 @@ public final class Environment
         createOrgUnitLevel();
         String orgUnitLevelId = null;
         for ( OrganisationUnitLevel organisationUnitLevel : DHIS2_CLIENT.get( "organisationUnitLevels" )
-            .withFields( "id" )
+            .withField( "id" )
             .withoutPaging().transfer().returnAs( OrganisationUnitLevel.class, "organisationUnitLevels" ) )
         {
             orgUnitLevelId = organisationUnitLevel.getId().get();
