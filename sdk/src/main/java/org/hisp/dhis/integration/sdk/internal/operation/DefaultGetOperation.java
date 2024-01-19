@@ -47,7 +47,7 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
 {
     protected final List<String> fields = new ArrayList<>();
 
-    protected String filter;
+    protected List<String> filters = new ArrayList<>();
 
     protected String rootJunction;
 
@@ -71,7 +71,7 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
 
             httpUrlBuilder.addQueryParameter( "fields", fieldsAsString.substring( 0, fieldsAsString.length() - 1 ) );
         }
-        if ( filter != null )
+        for ( String filter : filters )
         {
             httpUrlBuilder.addQueryParameter( "filter", filter );
         }
@@ -115,7 +115,7 @@ public class DefaultGetOperation extends AbstractOperation<Dhis2Response> implem
     @Override
     public GetOperation withFilter( String filter )
     {
-        this.filter = filter;
+        filters.add( filter );
         return this;
     }
 

@@ -44,7 +44,7 @@ import static org.mockito.Mockito.when;
 public class DefaultGetOperationTestCase
 {
     @Test
-    public void testTransferGivenFields()
+    public void testTransferGivenMultipleWithField()
         throws
         IOException
     {
@@ -58,13 +58,53 @@ public class DefaultGetOperationTestCase
         when( responseMock.isSuccessful() ).thenReturn( true );
 
         GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
-            null ).withField( "id" );
+            null ).withField( "id" ).withField( "name" );
         getOperation.transfer();
-        assertEquals( "fields=id", requestArgumentCaptor.getValue().url().url().getQuery() );
+        assertEquals( "fields=id%2Cname", requestArgumentCaptor.getValue().url().url().getQuery() );
     }
 
     @Test
-    public void testTransferGivenOrRootJunction()
+    public void testTransferGivenWithFields()
+        throws
+        IOException
+    {
+        OkHttpClient okHttpClientMock = mock( OkHttpClient.class );
+        Call callMock = mock( Call.class );
+        Response responseMock = mock( Response.class );
+
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass( Request.class );
+        when( callMock.execute() ).thenReturn( responseMock );
+        when( okHttpClientMock.newCall( requestArgumentCaptor.capture() ) ).thenReturn( callMock );
+        when( responseMock.isSuccessful() ).thenReturn( true );
+
+        GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
+            null ).withFields( "id", "name" );
+        getOperation.transfer();
+        assertEquals( "fields=id%2Cname", requestArgumentCaptor.getValue().url().url().getQuery() );
+    }
+
+    @Test
+    public void testTransferGivenMultipleWithFilter()
+        throws
+        IOException
+    {
+        OkHttpClient okHttpClientMock = mock( OkHttpClient.class );
+        Call callMock = mock( Call.class );
+        Response responseMock = mock( Response.class );
+
+        ArgumentCaptor<Request> requestArgumentCaptor = ArgumentCaptor.forClass( Request.class );
+        when( callMock.execute() ).thenReturn( responseMock );
+        when( okHttpClientMock.newCall( requestArgumentCaptor.capture() ) ).thenReturn( callMock );
+        when( responseMock.isSuccessful() ).thenReturn( true );
+
+        GetOperation getOperation = new DefaultGetOperation( "https://play.dhis2.org/2.38.0/api", "", okHttpClientMock,
+            null ).withFilter( "id:in:[id1,id2]" ).withFilter( "code:eq:code1" );
+        getOperation.transfer();
+        assertEquals( "filter=id%3Ain%3A%5Bid1%2Cid2%5D&filter=code%3Aeq%3Acode1", requestArgumentCaptor.getValue().url().url().getQuery() );
+    }
+
+    @Test
+    public void testTransferGivenWithOrRootJunction()
         throws
         IOException
     {
@@ -84,7 +124,7 @@ public class DefaultGetOperationTestCase
     }
 
     @Test
-    public void testTransferGivenAndRootJunction()
+    public void testTransferGivenWithAndRootJunction()
         throws
         IOException
     {
