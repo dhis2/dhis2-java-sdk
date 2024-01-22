@@ -16,7 +16,7 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>1.1.1</version>
+                <version>1.2.1</version>
                 <configuration>
                     <useOptionalForGetters>true</useOptionalForGetters>
                     <generateBuilders>true</generateBuilders>
@@ -26,6 +26,9 @@
                     <includeConstructors>true</includeConstructors>
                     <initializeCollections>false</initializeCollections>
                     <serializable>true</serializable>
+                    <formatTypeMapping>
+                        <int64>java.lang.Long</int64>
+                    </formatTypeMapping>
                 </configuration>
                 <executions>
                     <execution>
