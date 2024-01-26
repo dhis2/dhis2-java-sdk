@@ -27,6 +27,8 @@
  */
 package org.hisp.dhis.integration.sdk;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,8 +61,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public final class Environment
 {
     public static final String ORG_UNIT_ID;
@@ -77,27 +77,27 @@ public final class Environment
     {
         POSTGRESQL_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse( "postgis/postgis:12-3.2-alpine" ).asCompatibleSubstituteFor( "postgres" ) )
-            .withDatabaseName( "dhis2" )
-            .withNetworkAliases( "db" )
-            .withUsername( "dhis" )
-            .withPassword( "dhis" ).withNetwork( NETWORK );
+                .withDatabaseName( "dhis2" )
+                .withNetworkAliases( "db" )
+                .withUsername( "dhis" )
+                .withPassword( "dhis" ).withNetwork( NETWORK );
 
         POSTGRESQL_CONTAINER.start();
 
         DHIS2_CONTAINER = new GenericContainer<>(
             "dhis2/core:2.38.1-tomcat-8.5-jdk11-openjdk-slim" )
-            .dependsOn( POSTGRESQL_CONTAINER )
-            .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
-            .withNetwork( NETWORK ).withExposedPorts( 8080 )
-            .waitingFor(
-                new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
-            .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
+                .dependsOn( POSTGRESQL_CONTAINER )
+                .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
+                .withNetwork( NETWORK ).withExposedPorts( 8080 )
+                .waitingFor(
+                    new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
+                .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
 
         DHIS2_CONTAINER.start();
 
         String dhis2BaseApiUrl = "http://" + Environment.getDhis2Container().getHost() + ":"
             + Environment.getDhis2Container()
-            .getFirstMappedPort()
+                .getFirstMappedPort()
             + "/api";
 
         Dhis2Client basicCredentialsDhis2Client = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, "admin", "district" )
@@ -202,9 +202,7 @@ public final class Environment
             .transfer();
     }
 
-    public static List<String> createDhis2TrackedEntitiesWithEnrollment( int numberOfTrackedEntities )
-        throws
-        IOException
+    public static List<String> createTrackedEntitiesWithEnrollment( int numberOfTrackedEntities )
     {
         List<String> trackedEntities = new ArrayList<>();
         for ( int i = 0; i < numberOfTrackedEntities; i++ )
@@ -231,7 +229,8 @@ public final class Environment
                 .withEnrollments( enrollment );
 
             String trackedEntityId = DHIS2_CLIENT.post( "tracker" )
-                .withResource( Collections.singletonMap( "trackedEntities", Collections.singletonList( trackedEntity ) ) )
+                .withResource(
+                    Collections.singletonMap( "trackedEntities", Collections.singletonList( trackedEntity ) ) )
                 .withParameter( "async", "false" )
                 .transfer()
                 .returnAs( TrackerImportReport.class ).getBundleReport().get().getTypeReportMap().get()
@@ -243,9 +242,8 @@ public final class Environment
         return trackedEntities;
     }
 
-    public static void deleteDhis2TrackedEntities( List<String> trackedEntities )
-        throws
-        IOException
+    public static void deleteTestTrackedEntities( List<String> trackedEntities )
+        throws IOException
     {
         for ( String trackedEntity : trackedEntities )
         {
