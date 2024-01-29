@@ -27,37 +27,39 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation.page;
 
-import io.restassured.RestAssured;
-import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_38_1.TrackedEntity;
-import org.hisp.dhis.integration.sdk.AbstractTestCase;
-import org.hisp.dhis.integration.sdk.Environment;
-import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
+import org.hisp.dhis.api.model.v2_38_1.TrackedEntity;
+import org.hisp.dhis.api.model.v2_38_1.User;
+import org.hisp.dhis.integration.sdk.AbstractTestCase;
+import org.hisp.dhis.integration.sdk.Environment;
+import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+
+import io.restassured.RestAssured;
 
 public class PagingCollectOperationTestCase extends AbstractTestCase
 {
     @Test
-    public void testTransferGivenOnePageOfOrganisationUnits()
+    public void testTransferGivenSinglePageOfOrganisationUnits()
     {
         List<String> orgUnitIds = Environment.createTestOrgUnits( 9 );
         Iterable<OrganisationUnit> organisationUnitIterable = new DefaultPagingCollectOperation(
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory )
-        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
+                converterFactory ) ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
-        List<OrganisationUnit> organisationAsUnits = StreamSupport
+        List<OrganisationUnit> organisationUnits = StreamSupport
             .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );
 
-        assertEquals( 10, organisationAsUnits.size() );
+        assertEquals( 10, organisationUnits.size() );
         Environment.deleteTestOrgUnits( orgUnitIds );
     }
 
@@ -69,59 +71,71 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory )
-        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
+                converterFactory ) ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
-        List<OrganisationUnit> organisationAsUnits = StreamSupport
+        List<OrganisationUnit> organisationUnits = StreamSupport
             .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );
 
-        assertEquals( 150, organisationAsUnits.size() );
+        assertEquals( 150, organisationUnits.size() );
         Environment.deleteTestOrgUnits( orgUnitIds );
     }
 
     @Test
-    public void testTransferGivenOnePageOfTrackedEntities()
-        throws
-        Exception
+    @Timeout( 5 )
+    // SEE: https://dhis2.atlassian.net/browse/DHIS2-16528
+    public void testTransferGivenSinglePageOfUsers()
     {
-        List<String> trackedEntityIds = Environment.createDhis2TrackedEntitiesWithEnrollment( 25 );
+        Iterable<User> usersIterable = new DefaultPagingCollectOperation(
+            RestAssured.baseURI + "/api", "me",
+            dhis2Client.getHttpClient(), converterFactory,
+            new DefaultGetOperation( RestAssured.baseURI + "/api/", "users", dhis2Client.getHttpClient(),
+                converterFactory ) ).transfer().returnAs( User.class, "users" );
+
+        List<User> users = StreamSupport
+            .stream( usersIterable.spliterator(), false ).collect( Collectors.toList() );
+
+        assertEquals( 4, users.size() );
+    }
+
+    @Test
+    public void testTransferGivenSinglePageOfTrackedEntities()
+        throws Exception
+    {
+        List<String> trackedEntityIds = Environment.createTrackedEntitiesWithEnrollment( 25 );
         Iterable<TrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/tracker/", "trackedEntities",
                 dhis2Client.getHttpClient(),
                 converterFactory ).withParameter( "program", "w0qPtIW0JYu" )
-                .withParameter( "orgUnit", Environment.ORG_UNIT_ID )
-        ).transfer()
-            .returnAs( TrackedEntity.class, "instances" );
+                    .withParameter( "orgUnit", Environment.ORG_UNIT_ID ) ).transfer()
+                        .returnAs( TrackedEntity.class, "instances" );
 
         List<TrackedEntity> trackedEntities = StreamSupport
             .stream( trackedEntityIterable.spliterator(), false ).collect( Collectors.toList() );
 
         assertEquals( 25, trackedEntities.size() );
-        Environment.deleteDhis2TrackedEntities( trackedEntityIds );
+        Environment.deleteTestTrackedEntities( trackedEntityIds );
     }
 
     @Test
     public void testTransferGivenMultiplePagesOfTrackedEntities()
-        throws
-        Exception
+        throws Exception
     {
-        List<String> trackedEntityIds = Environment.createDhis2TrackedEntitiesWithEnrollment( 150 );
+        List<String> trackedEntityIds = Environment.createTrackedEntitiesWithEnrollment( 150 );
         Iterable<TrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/tracker/", "trackedEntities",
                 dhis2Client.getHttpClient(),
                 converterFactory ).withParameter( "program", "w0qPtIW0JYu" )
-                .withParameter( "orgUnit", Environment.ORG_UNIT_ID )
-        ).transfer()
-            .returnAs( TrackedEntity.class, "instances" );
+                    .withParameter( "orgUnit", Environment.ORG_UNIT_ID ) ).transfer()
+                        .returnAs( TrackedEntity.class, "instances" );
 
         List<TrackedEntity> trackedEntities = StreamSupport
             .stream( trackedEntityIterable.spliterator(), false ).collect( Collectors.toList() );
 
         assertEquals( 150, trackedEntities.size() );
-        Environment.deleteDhis2TrackedEntities( trackedEntityIds );
+        Environment.deleteTestTrackedEntities( trackedEntityIds );
     }
 }

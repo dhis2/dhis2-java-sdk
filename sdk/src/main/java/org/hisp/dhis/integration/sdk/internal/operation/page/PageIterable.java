@@ -129,11 +129,17 @@ public class PageIterable<T> implements Iterable<T>
                 currentPage = dhis2Response.returnAs( Page.class );
                 List<T> collection = (List<T>) converterFactory.createResponseConverter( responseType )
                     .convert( (List<Map<String, Object>>) currentPage.getAdditionalProperties().get( collectionName ) );
-                if ( collection.isEmpty() )
+                if ( collection.isEmpty() || jira_dhis2_16528( currentPage.getPager().getPage(), nextPageNumber ) )
                 {
                     lastPage = true;
                 }
                 return collection.iterator();
+            }
+
+            // FIXME: https://dhis2.atlassian.net/browse/DHIS2-16528
+            private boolean jira_dhis2_16528( int currentPageNumber, int nextPageNumber )
+            {
+                return currentPageNumber < nextPageNumber;
             }
 
             private String buildNextPageUrl( int nextPageNumber )
