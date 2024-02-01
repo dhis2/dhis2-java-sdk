@@ -26,13 +26,13 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>jackson-resource-model</artifactId>
-            <classifier>[v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
-            <version>2.1.0</version>
+            <classifier>[v40.2.2|v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.0</version>
         </dependency>
         ...
     </dependencies>
@@ -47,13 +47,13 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>android-jackson-resource-model</artifactId>
-            <classifier>[v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
-            <version>2.1.0</version>
+            <classifier>[v40.2.2|v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <version>3.0.0</version>
         </dependency>
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>2.1.0</version>
+            <version>3.0.0</version>
         </dependency>
         ...
     </dependencies>
@@ -197,17 +197,17 @@ import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
 ...
 
-String uniqueSystemIdentifier = Environment.getDhis2Client()
+String uniqueSystemIdentifier = dhis2Client
     .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
     .returnAs( ReservedValue.class )
     .getValue().get();
 
-TrackerImportReport trackerImportReport = Environment.getDhis2Client().post( "tracker" )
+TrackerImportReport trackerImportReport = dhis2Client.post( "tracker" )
     .withResource( new Body().withTrackedEntities( Arrays.asList( new TrackedEntityInfo()
-        .withOrgUnit( Environment.ORG_UNIT_ID )
+        .withOrgUnit( orgUnitId )
         .withTrackedEntityType( "MCPQUTHX1Ze" )
         .withEnrollments( Arrays.asList( new EnrollmentInfo()
-            .withOrgUnit( Environment.ORG_UNIT_ID )
+            .withOrgUnit( orgUnitId )
             .withProgram( "w0qPtIW0JYu" )
             .withEnrolledAt( new Date() )
             .withOccurredAt( new Date() )
