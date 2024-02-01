@@ -34,6 +34,6 @@ public class ReservedNameRuleFactory extends RuleFactory
 {
     public Rule<JClassContainer, JType> getSchemaRule()
     {
-        return new RservedNameSchemaRule( this );
+        return new ReservedNameSchemaRule( this );
     }
 }

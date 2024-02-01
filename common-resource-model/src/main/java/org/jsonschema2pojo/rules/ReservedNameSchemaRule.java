@@ -32,9 +32,9 @@ import com.sun.codemodel.JClassContainer;
 import com.sun.codemodel.JType;
 import org.jsonschema2pojo.Schema;
 
-public class RservedNameSchemaRule extends SchemaRule
+public class ReservedNameSchemaRule extends SchemaRule
 {
-    protected RservedNameSchemaRule( RuleFactory ruleFactory )
+    protected ReservedNameSchemaRule( RuleFactory ruleFactory )
     {
         super( ruleFactory );
     }
