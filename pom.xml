@@ -34,6 +34,7 @@
     </developers>
 
     <modules>
+        <module>common-resource-model</module>
         <module>android-jackson-resource-model</module>
         <module>jackson-resource-model</module>
         <module>sdk</module>
@@ -46,6 +47,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson.version>2.16.1</jackson.version>
         <gpg.skip>true</gpg.skip>
+        <jsonschema2pojo.version>1.2.1</jsonschema2pojo.version>
     </properties>
 
     <dependencyManagement>
@@ -181,6 +183,30 @@
         </plugins>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>org.jsonschema2pojo</groupId>
+                    <artifactId>jsonschema2pojo-maven-plugin</artifactId>
+                    <version>${jsonschema2pojo.version}</version>
+                    <dependencies>
+                        <dependency>
+                            <groupId>org.hisp.dhis.integration.sdk</groupId>
+                            <artifactId>common-resource-model</artifactId>
+                            <version>${project.version}</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <generateBuilders>true</generateBuilders>
+                        <includeDynamicBuilders>true</includeDynamicBuilders>
+                        <includeCopyConstructor>true</includeCopyConstructor>
+                        <includeDynamicAccessors>true</includeDynamicAccessors>
+                        <includeConstructors>true</includeConstructors>
+                        <initializeCollections>false</initializeCollections>
+                        <serializable>true</serializable>
+                        <formatTypeMapping>
+                            <int64>java.lang.Long</int64>
+                        </formatTypeMapping>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>animal-sniffer-maven-plugin</artifactId>

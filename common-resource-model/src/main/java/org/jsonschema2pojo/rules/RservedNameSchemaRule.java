@@ -25,35 +25,36 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.hisp.dhis.integration.sdk.internal.operation;
+package org.jsonschema2pojo.rules;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.sun.codemodel.JClassContainer;
+import com.sun.codemodel.JType;
+import org.jsonschema2pojo.Schema;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
-import org.hisp.dhis.integration.sdk.AbstractTestCase;
-import org.junit.jupiter.api.Test;
-
-import io.restassured.RestAssured;
-
-public class SimpleCollectOperationTestCase extends AbstractTestCase
+public class RservedNameSchemaRule extends SchemaRule
 {
-    @Test
-    public void testTransfer()
+    protected RservedNameSchemaRule( RuleFactory ruleFactory )
     {
-        Iterable<OrganisationUnit> organisationUnitIterable = new DefaultSimpleCollectOperation(
-            RestAssured.baseURI + "/api", "me",
-            dhis2Client.getHttpClient(), converterFactory,
-            new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory )
-        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
+        super( ruleFactory );
+    }
 
-        List<OrganisationUnit> organisationAsUnits = StreamSupport
-            .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );
+    @Override
+    public JType apply( String nodeName, JsonNode node, JsonNode parent,
+        JClassContainer generatableType, Schema currentSchema )
+    {
+        return super.apply( rewrite( nodeName, currentSchema ), node, parent, generatableType, currentSchema );
+    }
 
-        assertEquals( 1, organisationAsUnits.size() );
+    protected String rewrite( String nodeName, Schema currentSchema )
+    {
+        if ( currentSchema.getId() == null || currentSchema.getId().getFragment() == null )
+        {
+            return nodeName;
+        }
+        else
+        {
+            return nodeName + "Ref";
+        }
     }
 }

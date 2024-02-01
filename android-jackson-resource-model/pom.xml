@@ -16,18 +16,18 @@
             <plugin>
                 <groupId>org.jsonschema2pojo</groupId>
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
-                <version>1.1.1</version>
-                <configuration>
-                    <useOptionalForGetters>false</useOptionalForGetters>
-                    <generateBuilders>true</generateBuilders>
-                    <includeDynamicBuilders>true</includeDynamicBuilders>
-                    <includeCopyConstructor>true</includeCopyConstructor>
-                    <includeDynamicAccessors>true</includeDynamicAccessors>
-                    <includeConstructors>true</includeConstructors>
-                    <initializeCollections>false</initializeCollections>
-                    <serializable>true</serializable>
-                </configuration>
                 <executions>
+                    <execution>
+                        <id>v40.2.2</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v40.2.2</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v40_2_2</targetPackage>
+                            <customRuleFactory>org.jsonschema2pojo.rules.ReservedNameRuleFactory</customRuleFactory>
+                        </configuration>
+                    </execution>
                     <execution>
                         <id>v40.0</id>
                         <goals>
@@ -180,6 +180,20 @@
                                 <include>org/hisp/dhis/api/model/v40_0/**</include>
                             </includes>
                             <classifier>v40_0</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v40.2.2</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/model/v40_2_2/**</include>
+                            </includes>
+                            <classifier>v40.2.2</classifier>
                         </configuration>
                     </execution>
                 </executions>

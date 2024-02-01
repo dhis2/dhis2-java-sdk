@@ -101,7 +101,7 @@ import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 ...
 ...
     
-Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/2.37.7/api", "d2pat_apheulkR1x7ac8vr9vcxrFkXlgeRiFc94200032556" ).build()
+Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/40.2.2/api", "d2pat_apheulkR1x7ac8vr9vcxrFkXlgeRiFc94200032556" ).build();
 ```
 
 Create a client that authenticates with basic credentials:
@@ -111,13 +111,13 @@ import org.hisp.dhis.integration.sdk.Dhis2ClientBuilder;
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 ...
 
-Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/2.37.7/api", "admin", "district" ).build()
+Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/40.2.2/api", "admin", "district" ).build()
 ```
 
 Fetch an organisation unit:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 ...
     
 OrganisationUnit organisationUnit = dhis2Client.get( "organisationUnits/{id}", "fdc6uOvgoji" ).transfer()
@@ -127,7 +127,7 @@ OrganisationUnit organisationUnit = dhis2Client.get( "organisationUnits/{id}", "
 Fetch all organisation units:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -142,7 +142,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch organisation units over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -157,7 +157,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch all organisation units IDs over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -173,7 +173,7 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Fetch organisation units belonging to the third level of the organisation unit hierarchy over multiple pages:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 ...
     
 Iterable<OrganisationUnit> organisationUnits = dhis2Client.get( "organisationUnits" )
@@ -189,56 +189,39 @@ for ( OrganisationUnit organisationUnit : organisationUnits )
 Create a Tracked Entity Instance:
 
 ```java
-import org.hisp.dhis.api.model.v2_37_7.AggregationType;
-import org.hisp.dhis.api.model.v2_37_7.AnalyticsPeriodBoundary;
-import org.hisp.dhis.api.model.v2_37_7.Attribute;
-import org.hisp.dhis.api.model.v2_37_7.AttributeValue;
-import org.hisp.dhis.api.model.v2_37_7.Attribute__1;
-import org.hisp.dhis.api.model.v2_37_7.CategoryCombo;
-import org.hisp.dhis.api.model.v2_37_7.DataElement;
-import org.hisp.dhis.api.model.v2_37_7.DataValue__2;
-import org.hisp.dhis.api.model.v2_37_7.DescriptiveWebMessage;
-import org.hisp.dhis.api.model.v2_37_7.Enrollment;
-import org.hisp.dhis.api.model.v2_37_7.Event;
-import org.hisp.dhis.api.model.v2_37_7.EventChart;
-import org.hisp.dhis.api.model.v2_37_7.ImportSummaries;
-import org.hisp.dhis.api.model.v2_37_7.OptionSet;
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_37_7.OrganisationUnitLevel;
-import org.hisp.dhis.api.model.v2_37_7.Program;
-import org.hisp.dhis.api.model.v2_37_7.ProgramIndicator;
-import org.hisp.dhis.api.model.v2_37_7.TrackedEntityAttributeValue;
-import org.hisp.dhis.api.model.v2_37_7.TrackedEntityInstance;
-import org.hisp.dhis.api.model.v2_37_7.WebMessage;
+import org.hisp.dhis.api.model.v40_2_2.AttributeInfo;
+import org.hisp.dhis.api.model.v40_2_2.Body;
+import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
+import org.hisp.dhis.api.model.v40_2_2.ReservedValue;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
+import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
+import org.junit.jupiter.api.Test;
 ...
 
-TrackedEntityInstance tei = new TrackedEntityInstance().withAttributes(
-    List.of( new Attribute__1().withAttribute( "KSr2yTdu1AI" ).withValue( uniqueSystemIdentifier ),
-        new Attribute__1().withAttribute( "NI0QRzJvQ0k" ).withValue( "2022-01-18" ),
-        new Attribute__1().withAttribute( "ftFBu8mHZ4H" ).withValue( "John" ),
-        new Attribute__1().withAttribute( "EpbquVl5OD6" ).withValue( "Doe" ) ) )
-    .withEnrollments( List.of(
-        new Enrollment().withEnrollmentDate( new SimpleDateFormat( "yyyy-MM-dd" ).parse( "2022-01-19" ) )
-            .withProgram( "SSLpOM0r1U7" ).withOrgUnit( orgUnitId )
-            .withStatus( Event.EnrollmentStatus.ACTIVE )
-            .withEvents( List.of(
-                new Event().withStatus( EventChart.EventStatus.ACTIVE ).withDueDate( "2022-01-19" )
-                    .withEventDate( "2022-01-19" ).withProgramStage( "RcbCl5ww8XY" )
-                    .withProgram( "SSLpOM0r1U7" ).withOrgUnit( orgUnitId ).withDataValues( List.of(
-                        new DataValue__2().withDataElement( "ABhkInP0wGY" ).withValue( "HOME" )
-                            .withProvidedElsewhere( false ) ) ),
-                new Event().withStatus( EventChart.EventStatus.SCHEDULE ).withDueDate( "2022-01-19" )
-                    .withProgramStage( "s53RFfXA75f" ).withProgram( "SSLpOM0r1U7" )
-                    .withOrgUnit( orgUnitId ) ) ) ) )
-    .withOrgUnit( orgUnitId )
-    .withTrackedEntityType( "MCPQUTHX1Ze" );
-
-WebMessage webMessage = dhis2Client.post( "trackedEntityInstances" )
-    .withResource( tei ).transfer().returnAs(
-        WebMessage.class );
-
-if ( !webMessage.getStatus().get().equals( DescriptiveWebMessage.Status.OK ) )
-{
-    ...
-}
+    String uniqueSystemIdentifier = Environment.getDhis2Client()
+        .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
+        .returnAs( ReservedValue.class )
+        .getValue().get();
+    
+    TrackerImportReport trackerImportReport = Environment.getDhis2Client().post( "tracker" )
+        .withResource( new Body().withTrackedEntities( Arrays.asList( new TrackedEntityInfo()
+            .withOrgUnit( Environment.ORG_UNIT_ID )
+            .withTrackedEntityType( "MCPQUTHX1Ze" )
+            .withEnrollments( Arrays.asList( new EnrollmentInfo()
+                .withOrgUnit( Environment.ORG_UNIT_ID )
+                .withProgram( "w0qPtIW0JYu" )
+                .withEnrolledAt( new Date() )
+                .withOccurredAt( new Date() )
+                .withAttributes( Arrays.asList(
+                    new AttributeInfo().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ),
+                    new AttributeInfo().withAttribute( "oindugucx72" ).withValue( "Male" ),
+                    new AttributeInfo().withAttribute( "NI0QRzJvQ0k" ).withValue( "2023-01-01" ) ) ) ) ) ) ) )
+        .withParameter( "async", "false" )
+        .transfer()
+        .returnAs( TrackerImportReport.class );
+    
+    if ( !trackerImportReport.getStatus().equals( TrackerImportReport.StatusRef.OK ) )
+    {
+        ...
+    }
 ```

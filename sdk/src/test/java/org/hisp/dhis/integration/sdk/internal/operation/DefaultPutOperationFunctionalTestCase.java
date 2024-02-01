@@ -29,7 +29,7 @@ package org.hisp.dhis.integration.sdk.internal.operation;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.Environment;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
