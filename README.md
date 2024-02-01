@@ -195,7 +195,6 @@ import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
 import org.hisp.dhis.api.model.v40_2_2.ReservedValue;
 import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
-import org.junit.jupiter.api.Test;
 ...
 
     String uniqueSystemIdentifier = Environment.getDhis2Client()
