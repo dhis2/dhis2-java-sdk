@@ -35,6 +35,7 @@ import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -44,6 +45,8 @@ public class ReadMeExampleTestCase
 {
     @Test
     public void testCreateATrackedEntityInstance()
+        throws
+        IOException
     {
         String uniqueSystemIdentifier = Environment.getDhis2Client()
             .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
@@ -71,5 +74,11 @@ public class ReadMeExampleTestCase
         {
             fail();
         }
+
+        Environment.deleteTestTrackedEntities(
+            Arrays.asList( trackerImportReport.getBundleReport().get().getTypeReportMap().get()
+                .getAdditionalProperties().get( "TRACKED_ENTITY" ).getObjectReports().get().get( 0 )
+                .getUid().get() ) );
+
     }
 }

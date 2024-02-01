@@ -148,7 +148,7 @@ public final class Environment
 
     }
 
-    private static String createTrackerProgram()
+    private static void createTrackerProgram()
     {
         try
         {
@@ -200,20 +200,17 @@ public final class Environment
                     .withTrackedEntityType( new TrackedEntityTypeRef__1().withId( "MCPQUTHX1Ze" ) ) )
                 .transfer()
                 .close();
+
+            DHIS2_CLIENT.post( "programStages" )
+                .withResource(
+                    new ProgramStage().withName( "Case Report" )
+                        .withProgram( new ProgramRef__9().withId( "w0qPtIW0JYu" ) ) )
+                .transfer().close();
         }
         catch ( IOException e )
         {
             throw new RuntimeException( e );
         }
-
-        String programStageId = DHIS2_CLIENT.post( "programStages" )
-            .withResource(
-                new ProgramStage().withName( "Case Report" )
-                    .withProgram( new ProgramRef__9().withId( "w0qPtIW0JYu" ) ) )
-            .transfer()
-            .returnAs( WebMessage.class ).getResponse().get().get( "uid" );
-
-        return programStageId;
     }
 
     private static String createOrgUnit()
@@ -317,37 +314,16 @@ public final class Environment
         return trackedEntities;
     }
 
-    public static void deleteTestTrackedEntities( List<String> trackedEntities )
+    public static void deleteTestTrackedEntities( List<String> trackedEntityIds )
         throws
         IOException
     {
-        for ( String trackedEntity : trackedEntities )
+        for ( String trackedEntity : trackedEntityIds )
         {
             DHIS2_CLIENT.delete( "trackedEntityInstances/{trackedEntityId}", trackedEntity )
                 .transfer()
                 .close();
         }
-    }
-
-    private static void importMetaData( String orgUnitLevelId )
-    {
-        String metaData;
-        try ( InputStream inputStream = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream( "IDS_AFI_COMPLETE_1.0.0_DHIS2.38.json" );
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader( inputStream, Charset.defaultCharset() ) ) )
-        {
-            String content = reader.lines().collect( Collectors.joining( "\n" ) );
-            metaData = content.replaceAll( "<OU_LEVEL_DISTRICT_UID>", orgUnitLevelId );
-        }
-        catch ( IOException e )
-        {
-            throw new RuntimeException( e );
-        }
-        WebMessage webMessage = DHIS2_CLIENT.post( "metadata" )
-            .withResource( metaData )
-            .withParameter( "atomicMode", "NONE" ).transfer().returnAs( WebMessage.class );
-        assertEquals( WebMessage.StatusRef.OK, webMessage.getStatus() );
     }
 
     public static GenericContainer<?> getDhis2Container()
