@@ -58,7 +58,7 @@
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>jackson-resource-model</artifactId>
             <version>${project.version}</version>
-            <classifier>v2.38.1</classifier>
+            <classifier>v40.2.2</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>

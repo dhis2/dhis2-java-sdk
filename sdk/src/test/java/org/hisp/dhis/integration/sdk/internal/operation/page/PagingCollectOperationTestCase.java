@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_38_1.TrackedEntity;
-import org.hisp.dhis.api.model.v2_38_1.User;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntity;
+import org.hisp.dhis.api.model.v40_2_2.User;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.Environment;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
@@ -94,7 +94,7 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
         List<User> users = StreamSupport
             .stream( usersIterable.spliterator(), false ).collect( Collectors.toList() );
 
-        assertEquals( 4, users.size() );
+        assertEquals( 2, users.size() );
     }
 
     @Test

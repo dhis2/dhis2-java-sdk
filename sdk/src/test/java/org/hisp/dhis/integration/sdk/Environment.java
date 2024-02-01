@@ -27,7 +27,31 @@
  */
 package org.hisp.dhis.integration.sdk;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.hisp.dhis.api.model.v40_2_2.ApiToken;
+import org.hisp.dhis.api.model.v40_2_2.AttributeInfo;
+import org.hisp.dhis.api.model.v40_2_2.Body;
+import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
+import org.hisp.dhis.api.model.v40_2_2.OrganisationUnitLevel;
+import org.hisp.dhis.api.model.v40_2_2.Program;
+import org.hisp.dhis.api.model.v40_2_2.ProgramRef__9;
+import org.hisp.dhis.api.model.v40_2_2.ProgramStage;
+import org.hisp.dhis.api.model.v40_2_2.ProgramTrackedEntityAttribute;
+import org.hisp.dhis.api.model.v40_2_2.ReservedValue;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityAttribute;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityAttributeRef;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityType;
+import org.hisp.dhis.api.model.v40_2_2.TrackedEntityTypeRef__1;
+import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
+import org.hisp.dhis.api.model.v40_2_2.WebMessage;
+import org.hisp.dhis.integration.sdk.api.Dhis2Client;
+import org.testcontainers.containers.BindMode;
+import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -36,30 +60,15 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.hisp.dhis.api.model.v2_38_1.ApiToken;
-import org.hisp.dhis.api.model.v2_38_1.Attribute__2;
-import org.hisp.dhis.api.model.v2_38_1.DescriptiveWebMessage;
-import org.hisp.dhis.api.model.v2_38_1.Enrollment__2;
-import org.hisp.dhis.api.model.v2_38_1.OrganisationUnit;
-import org.hisp.dhis.api.model.v2_38_1.OrganisationUnitLevel;
-import org.hisp.dhis.api.model.v2_38_1.TrackedEntity;
-import org.hisp.dhis.api.model.v2_38_1.TrackerImportReport;
-import org.hisp.dhis.api.model.v2_38_1.WebMessage;
-import org.hisp.dhis.integration.sdk.api.Dhis2Client;
-import org.testcontainers.containers.BindMode;
-import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.containers.Network;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.containers.wait.strategy.HttpWaitStrategy;
-import org.testcontainers.utility.DockerImageName;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class Environment
 {
@@ -77,27 +86,27 @@ public final class Environment
     {
         POSTGRESQL_CONTAINER = new PostgreSQLContainer<>(
             DockerImageName.parse( "postgis/postgis:12-3.2-alpine" ).asCompatibleSubstituteFor( "postgres" ) )
-                .withDatabaseName( "dhis2" )
-                .withNetworkAliases( "db" )
-                .withUsername( "dhis" )
-                .withPassword( "dhis" ).withNetwork( NETWORK );
+            .withDatabaseName( "dhis2" )
+            .withNetworkAliases( "db" )
+            .withUsername( "dhis" )
+            .withPassword( "dhis" ).withNetwork( NETWORK );
 
         POSTGRESQL_CONTAINER.start();
 
         DHIS2_CONTAINER = new GenericContainer<>(
-            "dhis2/core:2.38.1-tomcat-8.5-jdk11-openjdk-slim" )
-                .dependsOn( POSTGRESQL_CONTAINER )
-                .withClasspathResourceMapping( "dhis.conf", "/DHIS2_home/dhis.conf", BindMode.READ_WRITE )
-                .withNetwork( NETWORK ).withExposedPorts( 8080 )
-                .waitingFor(
-                    new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
-                .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
+            "dhis2/core:2.40.0" )
+            .dependsOn( POSTGRESQL_CONTAINER )
+            .withClasspathResourceMapping( "dhis.conf", "/opt/dhis2/dhis.conf", BindMode.READ_WRITE )
+            .withNetwork( NETWORK ).withExposedPorts( 8080 )
+            .waitingFor(
+                new HttpWaitStrategy().forStatusCode( 200 ).withStartupTimeout( Duration.ofSeconds( 120 ) ) )
+            .withEnv( "WAIT_FOR_DB_CONTAINER", "db" + ":" + 5432 + " -t 0" );
 
         DHIS2_CONTAINER.start();
 
         String dhis2BaseApiUrl = "http://" + Environment.getDhis2Container().getHost() + ":"
             + Environment.getDhis2Container()
-                .getFirstMappedPort()
+            .getFirstMappedPort()
             + "/api";
 
         Dhis2Client basicCredentialsDhis2Client = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, "admin", "district" )
@@ -123,20 +132,13 @@ public final class Environment
                 // erroneously declared as an integer instead of long
                 .withAdditionalProperty( "expire", new Date().getTime() + 1000000 ) )
             .transfer().returnAs( WebMessage.class );
-        String pat = (String) ((Map<String, Object>) webMessage.getResponse().get()).get( "key" );
+        String pat = webMessage.getResponse().get().get( "key" );
 
         DHIS2_CLIENT = Dhis2ClientBuilder.newClient( dhis2BaseApiUrl, pat ).build();
 
         ORG_UNIT_ID = createOrgUnit();
         createOrgUnitLevel();
-        String orgUnitLevelId = null;
-        for ( OrganisationUnitLevel organisationUnitLevel : DHIS2_CLIENT.get( "organisationUnitLevels" )
-            .withField( "id" )
-            .withoutPaging().transfer().returnAs( OrganisationUnitLevel.class, "organisationUnitLevels" ) )
-        {
-            orgUnitLevelId = organisationUnitLevel.getId().get();
-        }
-        importMetaData( Objects.requireNonNull( orgUnitLevelId ) );
+        createTrackerProgram();
         addOrgUnitToTrackerProgram( ORG_UNIT_ID );
         addOrgUnitToUser( ORG_UNIT_ID );
     }
@@ -146,15 +148,80 @@ public final class Environment
 
     }
 
+    private static void createTrackerProgram()
+    {
+        try
+        {
+            DHIS2_CLIENT.post( "trackedEntityTypes" )
+                .withResource( new TrackedEntityType().withId( "MCPQUTHX1Ze" ).withName( "Person" )
+                    .withCode( "GEN_LIB_TRK_PERSON" ) )
+                .transfer().close();
+
+            DHIS2_CLIENT.post( "trackedEntityAttributes" )
+                .withResource(
+                    new TrackedEntityAttribute().withId( "HlKXyR5qr2e" ).withValueType(
+                            TrackedEntityAttribute.ValueTypeRef.TEXT ).withShortName( "Patient UID" )
+                        .withName( "Patient UID" ).withUnique( true ).withFormName( "Patient UID" )
+                        .withGenerated( true )
+                        .withPattern( "RANDOM(XXX######)" )
+                        .withCode( "IDS_AFI_PATIENT_UID" )
+                        .withAggregationType( TrackedEntityAttribute.AggregationTypeRef.COUNT ) )
+                .transfer().close();
+
+            DHIS2_CLIENT.post( "trackedEntityAttributes" )
+                .withResource(
+                    new TrackedEntityAttribute().withId( "oindugucx72" ).withValueType(
+                            TrackedEntityAttribute.ValueTypeRef.TEXT ).withShortName( "Sex" ).withName( "GEN - Sex" )
+                        .withFormName( "Sex" )
+                        .withCode( "PATINFO_SEX" )
+                        .withAggregationType( TrackedEntityAttribute.AggregationTypeRef.NONE ) )
+                .transfer().close();
+
+            DHIS2_CLIENT.post( "trackedEntityAttributes" )
+                .withResource(
+                    new TrackedEntityAttribute().withId( "NI0QRzJvQ0k" ).withValueType(
+                            TrackedEntityAttribute.ValueTypeRef.DATE ).withShortName( "Date of birth" )
+                        .withName( "GEN - Date of birth" ).withFormName( "Date of birth" )
+                        .withCode( "PATINFO_DOB" )
+                        .withAggregationType( TrackedEntityAttribute.AggregationTypeRef.COUNT ) )
+                .transfer().close();
+
+            DHIS2_CLIENT.post( "programs" )
+                .withResource( new Program().withId( "w0qPtIW0JYu" ).withName( "AFI - Acute Febrile Illness" )
+                    .withProgramTrackedEntityAttributes( Arrays.asList(
+                        new ProgramTrackedEntityAttribute().withTrackedEntityAttribute(
+                            new TrackedEntityAttributeRef().withId( "HlKXyR5qr2e" ) ),
+                        new ProgramTrackedEntityAttribute().withTrackedEntityAttribute(
+                            new TrackedEntityAttributeRef().withId( "oindugucx72" ) ),
+                        new ProgramTrackedEntityAttribute().withTrackedEntityAttribute(
+                            new TrackedEntityAttributeRef().withId( "NI0QRzJvQ0k" ) ) ) )
+                    .withShortName( "AFI" )
+                    .withCode( "IDS_AFI" ).withProgramType( Program.ProgramTypeRef.WITH_REGISTRATION )
+                    .withTrackedEntityType( new TrackedEntityTypeRef__1().withId( "MCPQUTHX1Ze" ) ) )
+                .transfer()
+                .close();
+
+            DHIS2_CLIENT.post( "programStages" )
+                .withResource(
+                    new ProgramStage().withName( "Case Report" )
+                        .withProgram( new ProgramRef__9().withId( "w0qPtIW0JYu" ) ) )
+                .transfer().close();
+        }
+        catch ( IOException e )
+        {
+            throw new RuntimeException( e );
+        }
+    }
+
     private static String createOrgUnit()
     {
         OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme" ).withShortName( "Acme" )
             .withCode( "ACME" )
             .withOpeningDate( new Date() );
 
-        return (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit )
+        return DHIS2_CLIENT.post( "organisationUnits" ).withResource( organisationUnit )
             .transfer()
-            .returnAs( WebMessage.class ).getResponse().get()).get( "uid" );
+            .returnAs( WebMessage.class ).getResponse().get().get( "uid" );
     }
 
     public static List<String> createTestOrgUnits( int numberOfOrgUnits )
@@ -165,10 +232,10 @@ public final class Environment
             OrganisationUnit organisationUnit = new OrganisationUnit().withName( "Acme " + i )
                 .withShortName( "Acme " + i )
                 .withOpeningDate( new Date() );
-            orgUnitIds.add( (String) ((Map<String, Object>) DHIS2_CLIENT.post( "organisationUnits" )
+            orgUnitIds.add( DHIS2_CLIENT.post( "organisationUnits" )
                 .withResource( organisationUnit )
                 .transfer()
-                .returnAs( WebMessage.class ).getResponse().get()).get( "uid" ) );
+                .returnAs( WebMessage.class ).getResponse().get().get( "uid" ) );
         }
         return orgUnitIds;
     }
@@ -207,30 +274,35 @@ public final class Environment
         List<String> trackedEntities = new ArrayList<>();
         for ( int i = 0; i < numberOfTrackedEntities; i++ )
         {
-            List<Attribute__2> attributes = new ArrayList<>();
+            List<AttributeInfo> attributes = new ArrayList<>();
+
+            String uniqueSystemIdentifier = Environment.getDhis2Client()
+                .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
+                .returnAs( ReservedValue.class )
+                .getValue().get();
+
             attributes.add(
-                new Attribute__2().withAttribute( "HlKXyR5qr2e" ).withValue( String.format( "ID-%s", i ) ) );
-            attributes.add( new Attribute__2().withAttribute( "oindugucx72" )
+                new AttributeInfo().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ) );
+            attributes.add( new AttributeInfo().withAttribute( "oindugucx72" )
                 .withValue( "Male" ) );
-            attributes.add( new Attribute__2().withAttribute( "NI0QRzJvQ0k" )
+            attributes.add( new AttributeInfo().withAttribute( "NI0QRzJvQ0k" )
                 .withValue( "2023-01-01" ) );
 
-            List<Enrollment__2> enrollment = new ArrayList<>();
-            enrollment.add( new Enrollment__2()
+            List<EnrollmentInfo> enrollment = new ArrayList<>();
+            enrollment.add( new EnrollmentInfo()
                 .withOrgUnit( ORG_UNIT_ID )
                 .withProgram( "w0qPtIW0JYu" )
-                .withEnrolledAt( "2023-01-01" )
-                .withOccurredAt( "2023-01-01" )
+                .withEnrolledAt( new Date() )
+                .withOccurredAt( new Date() )
                 .withAttributes( attributes ) );
 
-            TrackedEntity trackedEntity = new TrackedEntity()
+            TrackedEntityInfo trackedEntity = new TrackedEntityInfo()
                 .withOrgUnit( ORG_UNIT_ID )
                 .withTrackedEntityType( "MCPQUTHX1Ze" )
                 .withEnrollments( enrollment );
 
             String trackedEntityId = DHIS2_CLIENT.post( "tracker" )
-                .withResource(
-                    Collections.singletonMap( "trackedEntities", Collections.singletonList( trackedEntity ) ) )
+                .withResource( new Body().withTrackedEntities( Collections.singletonList( trackedEntity ) ) )
                 .withParameter( "async", "false" )
                 .transfer()
                 .returnAs( TrackerImportReport.class ).getBundleReport().get().getTypeReportMap().get()
@@ -242,36 +314,16 @@ public final class Environment
         return trackedEntities;
     }
 
-    public static void deleteTestTrackedEntities( List<String> trackedEntities )
-        throws IOException
+    public static void deleteTestTrackedEntities( List<String> trackedEntityIds )
+        throws
+        IOException
     {
-        for ( String trackedEntity : trackedEntities )
+        for ( String trackedEntity : trackedEntityIds )
         {
             DHIS2_CLIENT.delete( "trackedEntityInstances/{trackedEntityId}", trackedEntity )
                 .transfer()
                 .close();
         }
-    }
-
-    private static void importMetaData( String orgUnitLevelId )
-    {
-        String metaData = null;
-        try ( InputStream inputStream = Thread.currentThread().getContextClassLoader()
-            .getResourceAsStream( "IDS_AFI_COMPLETE_1.0.0_DHIS2.38.json" );
-            BufferedReader reader = new BufferedReader(
-                new InputStreamReader( inputStream, Charset.defaultCharset() ) ) )
-        {
-            String content = reader.lines().collect( Collectors.joining( "\n" ) );
-            metaData = content.replaceAll( "<OU_LEVEL_DISTRICT_UID>", orgUnitLevelId );
-        }
-        catch ( IOException e )
-        {
-            e.printStackTrace();
-        }
-        WebMessage webMessage = DHIS2_CLIENT.post( "metadata" )
-            .withResource( metaData )
-            .withParameter( "atomicMode", "NONE" ).transfer().returnAs( WebMessage.class );
-        assertEquals( DescriptiveWebMessage.Status.OK, webMessage.getStatus().get() );
     }
 
     public static GenericContainer<?> getDhis2Container()

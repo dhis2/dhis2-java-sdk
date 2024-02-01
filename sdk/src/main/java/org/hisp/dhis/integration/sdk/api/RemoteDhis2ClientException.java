@@ -49,4 +49,10 @@ public class RemoteDhis2ClientException extends Dhis2ClientException
     {
         return body;
     }
+
+    @Override
+    public String toString() {
+        String string = super.toString();
+        return (body != null) ? (string + " - " + body) : string;
+    }
 }
