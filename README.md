@@ -197,30 +197,30 @@ import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
 import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
 ...
 
-    String uniqueSystemIdentifier = Environment.getDhis2Client()
-        .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
-        .returnAs( ReservedValue.class )
-        .getValue().get();
-    
-    TrackerImportReport trackerImportReport = Environment.getDhis2Client().post( "tracker" )
-        .withResource( new Body().withTrackedEntities( Arrays.asList( new TrackedEntityInfo()
+String uniqueSystemIdentifier = Environment.getDhis2Client()
+    .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
+    .returnAs( ReservedValue.class )
+    .getValue().get();
+
+TrackerImportReport trackerImportReport = Environment.getDhis2Client().post( "tracker" )
+    .withResource( new Body().withTrackedEntities( Arrays.asList( new TrackedEntityInfo()
+        .withOrgUnit( Environment.ORG_UNIT_ID )
+        .withTrackedEntityType( "MCPQUTHX1Ze" )
+        .withEnrollments( Arrays.asList( new EnrollmentInfo()
             .withOrgUnit( Environment.ORG_UNIT_ID )
-            .withTrackedEntityType( "MCPQUTHX1Ze" )
-            .withEnrollments( Arrays.asList( new EnrollmentInfo()
-                .withOrgUnit( Environment.ORG_UNIT_ID )
-                .withProgram( "w0qPtIW0JYu" )
-                .withEnrolledAt( new Date() )
-                .withOccurredAt( new Date() )
-                .withAttributes( Arrays.asList(
-                    new AttributeInfo().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ),
-                    new AttributeInfo().withAttribute( "oindugucx72" ).withValue( "Male" ),
-                    new AttributeInfo().withAttribute( "NI0QRzJvQ0k" ).withValue( "2023-01-01" ) ) ) ) ) ) ) )
-        .withParameter( "async", "false" )
-        .transfer()
-        .returnAs( TrackerImportReport.class );
-    
-    if ( !trackerImportReport.getStatus().equals( TrackerImportReport.StatusRef.OK ) )
-    {
-        ...
-    }
+            .withProgram( "w0qPtIW0JYu" )
+            .withEnrolledAt( new Date() )
+            .withOccurredAt( new Date() )
+            .withAttributes( Arrays.asList(
+                new AttributeInfo().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ),
+                new AttributeInfo().withAttribute( "oindugucx72" ).withValue( "Male" ),
+                new AttributeInfo().withAttribute( "NI0QRzJvQ0k" ).withValue( "2023-01-01" ) ) ) ) ) ) ) )
+    .withParameter( "async", "false" )
+    .transfer()
+    .returnAs( TrackerImportReport.class );
+
+if ( !trackerImportReport.getStatus().equals( TrackerImportReport.StatusRef.OK ) )
+{
+    ...
+}
 ```
