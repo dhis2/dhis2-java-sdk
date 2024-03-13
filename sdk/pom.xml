@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dhis2-java-sdk-pom</artifactId>
         <groupId>org.hisp.dhis.integration.sdk</groupId>
-        <version>3.0.0</version>
+        <version>3.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dhis2-java-sdk</artifactId>
