@@ -26,10 +26,8 @@ jobs:
       env:
         OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
         OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
-        GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-        GPG_SECRET_KEYS: ${{ secrets.GPG_SECRET_KEYS }}
-        GPG_OWNERTRUST: ${{ secrets.GPG_OWNERTRUST }}
+        GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+        GPG_SECRET_KEYS: ${{ secrets.PGP_PRIVATE_KEY }}
       run: |
-        echo $GPG_SECRET_KEYS | base64 --decode | gpg --import --no-tty --batch --yes
-        echo $GPG_OWNERTRUST | base64 --decode | gpg --import-ownertrust
+        echo -e "$GPG_SECRET_KEYS" | gpg --import --no-tty --batch --yes
         mvn clean deploy --settings .mvn/settings.xml -Dgpg.skip=false -Dmaven.test.skip=true -B
