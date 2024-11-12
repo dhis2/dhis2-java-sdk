@@ -46,9 +46,10 @@ public class Page
     private Pager pager;
 
     @JsonCreator
-    public Page( @JsonProperty("page") Integer page, @JsonProperty("pageSize") Integer pageSize )
+    public Page( @JsonProperty("page") Integer page, @JsonProperty("pageSize") Integer pageSize, @JsonAnySetter Map<String, Object> additionalProperties )
     {
         pager = new Pager().withPage(page).withPageSize(pageSize);
+        this.additionalProperties.putAll(additionalProperties);
     }
 
     public Pager getPager()
@@ -72,5 +73,4 @@ public class Page
     {
         this.additionalProperties.put( name, value );
     }
-
 }
