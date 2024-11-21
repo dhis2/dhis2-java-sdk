@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.hisp.dhis.integration.sdk</groupId>
         <artifactId>dhis2-java-sdk-pom</artifactId>
-        <version>3.0.1</version>
+        <version>3.0.2-SNAPSHOT</version>
     </parent>
 
     <artifactId>common-resource-model</artifactId>
