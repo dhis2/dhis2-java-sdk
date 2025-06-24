@@ -24,8 +24,8 @@ jobs:
     - name: Publish
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       env:
-        OSSRH_USERNAME: ${{ secrets.SONATYPE_OSSRH_USERNAME }}
-        OSSRH_PASSWORD: ${{ secrets.SONATYPE_OSSRH_PASSWORD }}
+        SONATYPE_PORTAL_USERNAME: ${{ secrets.SONATYPE_PORTAL_USERNAME }}
+        SONATYPE_PORTAL_PASSWORD: ${{ secrets.SONATYPE_PORTAL_PASSWORD }}
         GPG_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
         GPG_SECRET_KEYS: ${{ secrets.PGP_PRIVATE_KEY }}
       run: |
