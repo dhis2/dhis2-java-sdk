@@ -27,12 +27,12 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>jackson-resource-model</artifactId>
             <classifier>[v42.4|v41.5|v40.2.2|v40.0|v2.39.1|v2.38.7|v2.37.7|v2.36.11|v2.35.13]</classifier>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
         ...
     </dependencies>
@@ -48,12 +48,12 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>android-jackson-resource-model</artifactId>
             <classifier>[v42.4|v41.5|v40.2.2|v40.0|v2.39.1|v2.38.7|v2.37.7|v2.36.11|v2.35.13]</classifier>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>3.0.1</version>
+            <version>3.0.2</version>
         </dependency>
         ...
     </dependencies>
@@ -70,7 +70,7 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>dhis2-java-sdk</artifactId>
-            <version>3.0.2-SNAPSHOT</version>
+            <version>3.0.3-SNAPSHOT</version>
         </dependency>
         ...
     </dependencies>
