@@ -21,6 +21,28 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>v42.4</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v42.4</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.model.v42_4</targetPackage>
+                            <customRuleFactory>org.jsonschema2pojo.rules.ReservedNameRuleFactory</customRuleFactory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v41.5</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v41.5</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.model.v41_5</targetPackage>
+                            <customRuleFactory>org.jsonschema2pojo.rules.ReservedNameRuleFactory</customRuleFactory>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>v40.2.2</id>
                         <goals>
                             <goal>generate</goal>
@@ -52,12 +74,12 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>v2.38.1</id>
+                        <id>v2.38.7</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.38.1</sourceDirectory>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.38.7</sourceDirectory>
                             <targetPackage>org.hisp.dhis.api.model.v2_38_1</targetPackage>
                         </configuration>
                     </execution>
@@ -140,7 +162,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>v2.38.1</id>
+                        <id>v2.38.7</id>
                         <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
@@ -148,9 +170,9 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_38_1/**</include>
+                                <include>org/hisp/dhis/api/model/v2_38_7/**</include>
                             </includes>
-                            <classifier>v2.38.1</classifier>
+                            <classifier>v2.38.7</classifier>
                         </configuration>
                     </execution>
                     <execution>
@@ -193,6 +215,34 @@
                                 <include>org/hisp/dhis/api/model/v40_2_2/**</include>
                             </includes>
                             <classifier>v40.2.2</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v41.5</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/model/v41_5/**</include>
+                            </includes>
+                            <classifier>v41.5</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v42.4</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/model/v42_4/**</include>
+                            </includes>
+                            <classifier>v42.4</classifier>
                         </configuration>
                     </execution>
                 </executions>

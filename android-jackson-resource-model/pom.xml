@@ -18,6 +18,28 @@
                 <artifactId>jsonschema2pojo-maven-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>v42.4</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v42.4</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v42_4</targetPackage>
+                            <customRuleFactory>org.jsonschema2pojo.rules.ReservedNameRuleFactory</customRuleFactory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v41.5</id>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v41.5</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v41_5</targetPackage>
+                            <customRuleFactory>org.jsonschema2pojo.rules.ReservedNameRuleFactory</customRuleFactory>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>v40.2.2</id>
                         <goals>
                             <goal>generate</goal>
@@ -49,13 +71,13 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>v2.38.1</id>
+                        <id>v2.38.7</id>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
-                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.38.1</sourceDirectory>
-                            <targetPackage>org.hisp.dhis.api.android.model.v2_38_1</targetPackage>
+                            <sourceDirectory>${maven.multiModuleProjectDirectory}/dhis2-json-schema-generator/schemas/v2.38.7</sourceDirectory>
+                            <targetPackage>org.hisp.dhis.api.android.model.v2_38_7</targetPackage>
                         </configuration>
                     </execution>
                     <execution>
@@ -107,7 +129,7 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_35_13/**</include>
+                                <include>org/hisp/dhis/api/android/model/v2_35_13/**</include>
                             </includes>
                             <classifier>v2.35.13</classifier>
                         </configuration>
@@ -121,7 +143,7 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_36_11/**</include>
+                                <include>org/hisp/dhis/api/android/model/v2_36_11/**</include>
                             </includes>
                             <classifier>v2.36.11</classifier>
                         </configuration>
@@ -135,7 +157,7 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_37_7/**</include>
+                                <include>org/hisp/dhis/api/android/model/v2_37_7/**</include>
                             </includes>
                             <classifier>v2.37.7</classifier>
                         </configuration>
@@ -149,9 +171,9 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_38_1/**</include>
+                                <include>org/hisp/dhis/api/android/model/v2_38_7/**</include>
                             </includes>
-                            <classifier>v2.38.1</classifier>
+                            <classifier>v2.38.7</classifier>
                         </configuration>
                     </execution>
                     <execution>
@@ -163,7 +185,7 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v2_39_1/**</include>
+                                <include>org/hisp/dhis/api/android/model/v2_39_1/**</include>
                             </includes>
                             <classifier>v2.39.1</classifier>
                         </configuration>
@@ -177,7 +199,7 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v40_0/**</include>
+                                <include>org/hisp/dhis/api/android/model/v40_0/**</include>
                             </includes>
                             <classifier>v40_0</classifier>
                         </configuration>
@@ -191,9 +213,37 @@
                         <configuration>
                             <classesDirectory>${project.build.directory}/classes</classesDirectory>
                             <includes>
-                                <include>org/hisp/dhis/api/model/v40_2_2/**</include>
+                                <include>org/hisp/dhis/api/android/model/v40_2_2/**</include>
                             </includes>
                             <classifier>v40.2.2</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v41.5</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/android/model/v41_5/**</include>
+                            </includes>
+                            <classifier>v41.5</classifier>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>v42.4</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <classesDirectory>${project.build.directory}/classes</classesDirectory>
+                            <includes>
+                                <include>org/hisp/dhis/api/android/model/v42_4/**</include>
+                            </includes>
+                            <classifier>v42.4</classifier>
                         </configuration>
                     </execution>
                 </executions>

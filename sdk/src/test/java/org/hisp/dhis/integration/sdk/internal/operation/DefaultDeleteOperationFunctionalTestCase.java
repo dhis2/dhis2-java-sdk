@@ -27,31 +27,35 @@
  */
 package org.hisp.dhis.integration.sdk.internal.operation;
 
-import io.restassured.RestAssured;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Date;
+import java.util.Map;
+
 import org.apache.commons.lang3.RandomStringUtils;
-import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
-import org.hisp.dhis.api.model.v40_2_2.WebMessage;
+import org.hisp.dhis.api.model.v42_4.OrganisationUnit;
+import org.hisp.dhis.api.model.v42_4.WebMessage;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.api.Dhis2Response;
 import org.hisp.dhis.integration.sdk.api.RemoteDhis2ClientException;
 import org.hisp.dhis.integration.sdk.internal.DefaultDhis2Response;
 import org.junit.jupiter.api.Test;
 
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import io.restassured.RestAssured;
 
 public class DefaultDeleteOperationFunctionalTestCase extends AbstractTestCase
 {
     @Test
     public void testTransfer()
     {
-        String orgUnitId = dhis2Client.post( "organisationUnits" )
+        Map<String, Object> webMessageResponse = (Map<String, Object>) dhis2Client.post( "organisationUnits" )
             .withResource( new OrganisationUnit().withName( RandomStringUtils.randomAlphabetic( 8 ) )
                 .withShortName( RandomStringUtils.randomAlphabetic( 8 ) ).withOpeningDate( new Date() ) )
-            .transfer().returnAs( WebMessage.class ).getResponse().get().get( "uid" );
+            .transfer().returnAs( WebMessage.class ).getResponse().get();
+
+        String orgUnitId = (String) webMessageResponse.get( "uid" );
 
         Dhis2Response dhis2Response = new DefaultDeleteOperation( RestAssured.baseURI + "/api",
             "organisationUnits/{orgUnitId}",

@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
-import org.hisp.dhis.api.model.v40_2_2.TrackedEntity;
-import org.hisp.dhis.api.model.v40_2_2.User;
+import org.hisp.dhis.api.model.v42_4.OrganisationUnit;
+import org.hisp.dhis.api.model.v42_4.TrackerTrackedEntity;
+import org.hisp.dhis.api.model.v42_4.User;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.hisp.dhis.integration.sdk.Environment;
 import org.hisp.dhis.integration.sdk.internal.operation.DefaultGetOperation;
@@ -102,16 +102,16 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
         throws Exception
     {
         List<String> trackedEntityIds = Environment.createTrackedEntitiesWithEnrollment( 25 );
-        Iterable<TrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
+        Iterable<TrackerTrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/tracker/", "trackedEntities",
                 dhis2Client.getHttpClient(),
                 converterFactory ).withParameter( "program", "w0qPtIW0JYu" )
                     .withParameter( "orgUnit", Environment.ORG_UNIT_ID ) ).transfer()
-                        .returnAs( TrackedEntity.class, "instances" );
+                        .returnAs( TrackerTrackedEntity.class, "instances" );
 
-        List<TrackedEntity> trackedEntities = StreamSupport
+        List<TrackerTrackedEntity> trackedEntities = StreamSupport
             .stream( trackedEntityIterable.spliterator(), false ).collect( Collectors.toList() );
 
         assertEquals( 25, trackedEntities.size() );
@@ -123,16 +123,16 @@ public class PagingCollectOperationTestCase extends AbstractTestCase
         throws Exception
     {
         List<String> trackedEntityIds = Environment.createTrackedEntitiesWithEnrollment( 150 );
-        Iterable<TrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
+        Iterable<TrackerTrackedEntity> trackedEntityIterable = new DefaultPagingCollectOperation(
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/tracker/", "trackedEntities",
                 dhis2Client.getHttpClient(),
                 converterFactory ).withParameter( "program", "w0qPtIW0JYu" )
                     .withParameter( "orgUnit", Environment.ORG_UNIT_ID ) ).transfer()
-                        .returnAs( TrackedEntity.class, "instances" );
+                        .returnAs( TrackerTrackedEntity.class, "instances" );
 
-        List<TrackedEntity> trackedEntities = StreamSupport
+        List<TrackerTrackedEntity> trackedEntities = StreamSupport
             .stream( trackedEntityIterable.spliterator(), false ).collect( Collectors.toList() );
 
         assertEquals( 150, trackedEntities.size() );

@@ -27,26 +27,26 @@
  */
 package org.hisp.dhis.integration.sdk;
 
-import org.hisp.dhis.api.model.v40_2_2.AttributeInfo;
-import org.hisp.dhis.api.model.v40_2_2.Body;
-import org.hisp.dhis.api.model.v40_2_2.EnrollmentInfo;
-import org.hisp.dhis.api.model.v40_2_2.ReservedValue;
-import org.hisp.dhis.api.model.v40_2_2.TrackedEntityInfo;
-import org.hisp.dhis.api.model.v40_2_2.TrackerImportReport;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import org.hisp.dhis.api.model.v42_4.Body;
+import org.hisp.dhis.api.model.v42_4.ReservedValue;
+import org.hisp.dhis.api.model.v42_4.TrackerAttribute;
+import org.hisp.dhis.api.model.v42_4.TrackerEnrollment;
+import org.hisp.dhis.api.model.v42_4.TrackerImportReport;
+import org.hisp.dhis.api.model.v42_4.TrackerTrackedEntity;
+import org.junit.jupiter.api.Test;
 
 public class ReadMeExampleTestCase
 {
     @Test
     public void testCreateATrackedEntityInstance()
-        throws
-        IOException
+        throws IOException
     {
         String uniqueSystemIdentifier = Environment.getDhis2Client()
             .get( "trackedEntityAttributes/HlKXyR5qr2e/generate" ).transfer()
@@ -54,23 +54,23 @@ public class ReadMeExampleTestCase
             .getValue().get();
 
         TrackerImportReport trackerImportReport = Environment.getDhis2Client().post( "tracker" )
-            .withResource( new Body().withTrackedEntities( Arrays.asList( new TrackedEntityInfo()
+            .withResource( new Body().withTrackedEntities( Collections.singletonList( new TrackerTrackedEntity()
                 .withOrgUnit( Environment.ORG_UNIT_ID )
                 .withTrackedEntityType( "MCPQUTHX1Ze" )
-                .withEnrollments( Arrays.asList( new EnrollmentInfo()
+                .withEnrollments( Collections.singletonList( new TrackerEnrollment()
                     .withOrgUnit( Environment.ORG_UNIT_ID )
                     .withProgram( "w0qPtIW0JYu" )
                     .withEnrolledAt( new Date() )
                     .withOccurredAt( new Date() )
                     .withAttributes( Arrays.asList(
-                        new AttributeInfo().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ),
-                        new AttributeInfo().withAttribute( "oindugucx72" ).withValue( "Male" ),
-                        new AttributeInfo().withAttribute( "NI0QRzJvQ0k" ).withValue( "2023-01-01" ) ) ) ) ) ) ) )
+                        new TrackerAttribute().withAttribute( "HlKXyR5qr2e" ).withValue( uniqueSystemIdentifier ),
+                        new TrackerAttribute().withAttribute( "oindugucx72" ).withValue( "Male" ),
+                        new TrackerAttribute().withAttribute( "NI0QRzJvQ0k" ).withValue( "2023-01-01" ) ) ) ) ) ) ) )
             .withParameter( "async", "false" )
             .transfer()
             .returnAs( TrackerImportReport.class );
 
-        if ( !trackerImportReport.getStatus().equals( TrackerImportReport.StatusRef.OK ) )
+        if ( !trackerImportReport.getStatus().equals( TrackerImportReport.TrackerStatus.OK ) )
         {
             fail();
         }

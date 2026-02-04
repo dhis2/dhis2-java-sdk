@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.hisp.dhis.api.model.v40_2_2.OrganisationUnit;
+import org.hisp.dhis.api.model.v42_4.OrganisationUnit;
 import org.hisp.dhis.integration.sdk.AbstractTestCase;
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +48,7 @@ public class SimpleCollectOperationTestCase extends AbstractTestCase
             RestAssured.baseURI + "/api", "me",
             dhis2Client.getHttpClient(), converterFactory,
             new DefaultGetOperation( RestAssured.baseURI + "/api/", "organisationUnits", dhis2Client.getHttpClient(),
-                converterFactory )
-        ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
+                converterFactory ) ).transfer().returnAs( OrganisationUnit.class, "organisationUnits" );
 
         List<OrganisationUnit> organisationAsUnits = StreamSupport
             .stream( organisationUnitIterable.spliterator(), false ).collect( Collectors.toList() );

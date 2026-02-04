@@ -26,7 +26,7 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>jackson-resource-model</artifactId>
-            <classifier>[v40.2.2|v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <classifier>[v42.4|v41.5|v40.2.2|v40.0|v2.39.1|v2.38.7|v2.37.7|v2.36.11|v2.35.13]</classifier>
             <version>3.0.1</version>
         </dependency>
         <dependency>
@@ -47,7 +47,7 @@ DHIS2 Java SDK is a _lightweight_ library that hides the nuts and bolts of DHIS2
         <dependency>
             <groupId>org.hisp.dhis.integration.sdk</groupId>
             <artifactId>android-jackson-resource-model</artifactId>
-            <classifier>[v40.2.2|v40.0|v2.39.1|v2.38.1|v2.37.7|v2.36.11|v2.35.13]</classifier>
+            <classifier>[v42.4|v41.5|v40.2.2|v40.0|v2.39.1|v2.38.7|v2.37.7|v2.36.11|v2.35.13]</classifier>
             <version>3.0.1</version>
         </dependency>
         <dependency>
@@ -111,7 +111,7 @@ import org.hisp.dhis.integration.sdk.Dhis2ClientBuilder;
 import org.hisp.dhis.integration.sdk.api.Dhis2Client;
 ...
 
-Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/40.2.2/api", "admin", "district" ).build()
+Dhis2Client dhis2Client = Dhis2ClientBuilder.newClient( "https://play.dhis2.org/40.2.2/api", "admin", "district" ).build();
 ```
 
 Fetch an organisation unit:
