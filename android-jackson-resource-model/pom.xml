@@ -10,6 +10,7 @@
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>android-jackson-resource-model</artifactId>
+    <name>Android Jackson Resource Model</name>
 
     <build>
         <plugins>

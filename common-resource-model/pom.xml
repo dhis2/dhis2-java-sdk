@@ -10,6 +10,7 @@
     </parent>
 
     <artifactId>common-resource-model</artifactId>
+    <name>Common Resource Model</name>
 
     <dependencies>
         <dependency>

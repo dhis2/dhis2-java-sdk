@@ -9,6 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>dhis2-java-sdk</artifactId>
+    <name>DHIS2 Java SDK</name>
 
     <build>
         <plugins>
