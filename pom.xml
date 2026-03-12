@@ -47,7 +47,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <jackson.version>2.18.2</jackson.version>
         <gpg.skip>true</gpg.skip>
-        <jsonschema2pojo.version>1.2.1</jsonschema2pojo.version>
+        <jsonschema2pojo.version>1.2.2</jsonschema2pojo.version>
     </properties>
 
     <dependencyManagement>
